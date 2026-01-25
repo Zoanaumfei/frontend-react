@@ -10,6 +10,7 @@ const readToken = key =>
 export function saveTokens({ idToken, accessToken, refreshToken }, remember) {
   const storage = remember ? localStorage : sessionStorage
 
+  clearTokens()
   if (idToken) storage.setItem(STORAGE_KEYS.idToken, idToken)
   if (accessToken) storage.setItem(STORAGE_KEYS.accessToken, accessToken)
   if (refreshToken) storage.setItem(STORAGE_KEYS.refreshToken, refreshToken)
