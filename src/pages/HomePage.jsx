@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../auth/auth.service'
 import { GROUPS } from '../auth/auth.constants.js'
@@ -43,15 +43,15 @@ function HomePage() {
         internalForm.remember,
       )
       if (!hasGroup(GROUPS.INTERNAL, GROUPS.ADMIN)) {
-        setInternalError('This account is not authorized for internal access.')
+        setInternalError('Esta conta não está autorizada para acesso interno.')
         return
       }
-      navigate('/internal-dashboard')
+      navigate('/internal-home')
     } catch (err) {
       const message =
         err?.message ||
         err?.code ||
-        'Unable to sign in. Please check your credentials.'
+        'Não foi possível entrar. Verifique suas credenciais.'
       setInternalError(message)
     } finally {
       setIsInternalLoading(false)
@@ -72,7 +72,7 @@ function HomePage() {
         externalForm.remember,
       )
       if (!hasGroup(GROUPS.EXTERNAL, GROUPS.ADMIN)) {
-        setExternalError('This account is not authorized for external access.')
+        setExternalError('Esta conta não está autorizada para acesso externo.')
         return
       }
       navigate('/external-dashboard')
@@ -80,7 +80,7 @@ function HomePage() {
       const message =
         err?.message ||
         err?.code ||
-        'Unable to sign in. Please check your credentials.'
+        'Não foi possível entrar. Verifique suas credenciais.'
       setExternalError(message)
     } finally {
       setIsExternalLoading(false)
@@ -89,150 +89,155 @@ function HomePage() {
 
   return (
     <section className="login-page">
-      <div className="login-hero">
-        <p className="login-hero__eyebrow">Oryzem Console</p>
-        <h1>Sign in to keep your data pipeline moving.</h1>
-        <p className="login-hero__lead">
-          Secure access powered by AWS Cognito and tailored for teams running
-          production workloads.
-        </p>
-        <div className="login-hero__grid">
-          <div className="login-hero__item">
-            <h3>Centralized access</h3>
-            <p>One identity layer across every service.</p>
-          </div>
-          <div className="login-hero__item">
-            <h3>Audit ready</h3>
-            <p>Track every sign-in and action in real time.</p>
-          </div>
-          <div className="login-hero__item">
-            <h3>Fast recovery</h3>
-            <p>Reset passwords instantly with Cognito flows.</p>
+      <div className="login-page__main">
+        <div className="login-hero">
+          <p className="login-hero__eyebrow">Portal de Fornecedores Oryzem</p>
+          <h1>Um portal para cada fluxo do fornecedor.</h1>
+          <p className="login-hero__lead">
+            Entre para gerenciar solicitações, acompanhar o status e colaborar
+            com nossas equipes internas em uma única experiência segura.
+          </p>
+
+          <div className="login-hero__grid">
+            <div className="login-hero__item">
+              <h3>Acesso centralizado</h3>
+              <p>Uma camada de identidade para cada recurso do fornecedor.</p>
+            </div>
+            <div className="login-hero__item">
+              <h3>Pronto para auditoria</h3>
+              <p>Acompanhe aprovações, atualizações e decisões de entrega.</p>
+            </div>
+            <div className="login-hero__item">
+              <h3>Recuperação rápida</h3>
+              <p>Redefina senhas instantaneamente com os fluxos do Cognito.</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="login-panels" aria-live="polite">
-        <div className="login-card">
-          <div className="login-card__header">
-            <h2>Internal access</h2>
-            <p>For employees and internal teams.</p>
-          </div>
-          <form className="login-form" onSubmit={handleInternalSubmit}>
-            <label className="login-form__field">
-              <span>Email</span>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@company.com"
-                value={internalForm.email}
-                onChange={event => handleChange(event, setInternalForm)}
-                disabled={isInternalLoading}
-                required
-              />
-            </label>
-            <label className="login-form__field">
-              <span>Password</span>
-              <input
-                type="password"
-                name="password"
-                autoComplete="current-password"
-                placeholder="********"
-                value={internalForm.password}
-                onChange={event => handleChange(event, setInternalForm)}
-                disabled={isInternalLoading}
-                required
-              />
-            </label>
-            <div className="login-form__row">
-              <label className="login-form__checkbox">
+        <div className="login-panels" aria-live="polite">
+          <div className="login-card">
+            <div className="login-card__header">
+              <h2>Acesso interno</h2>
+              <p>Para colaboradores e equipes internas.</p>
+            </div>
+            <form className="login-form" onSubmit={handleInternalSubmit}>
+              <label className="login-form__field">
+                <span>E-mail</span>
                 <input
-                  type="checkbox"
-                  name="remember"
-                  checked={internalForm.remember}
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder="voce@empresa.com"
+                  value={internalForm.email}
                   onChange={event => handleChange(event, setInternalForm)}
                   disabled={isInternalLoading}
+                  required
                 />
-                <span>Keep me signed in</span>
               </label>
-            </div>
-            {internalError ? (
-              <p className="login-form__error" role="alert">
-                {internalError}
-              </p>
-            ) : null}
-            <button
-              className="login-form__submit"
-              type="submit"
-              disabled={isInternalLoading}
-            >
-              {isInternalLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </form>
-        </div>
-
-        <div className="login-card">
-          <div className="login-card__header">
-            <h2>External access</h2>
-            <p>For partners and trusted collaborators.</p>
-          </div>
-          <form className="login-form" onSubmit={handleExternalSubmit}>
-            <label className="login-form__field">
-              <span>Email</span>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@partner.com"
-                value={externalForm.email}
-                onChange={event => handleChange(event, setExternalForm)}
-                disabled={isExternalLoading}
-                required
-              />
-            </label>
-            <label className="login-form__field">
-              <span>Password</span>
-              <input
-                type="password"
-                name="password"
-                autoComplete="current-password"
-                placeholder="********"
-                value={externalForm.password}
-                onChange={event => handleChange(event, setExternalForm)}
-                disabled={isExternalLoading}
-                required
-              />
-            </label>
-            <div className="login-form__row">
-              <label className="login-form__checkbox">
+              <label className="login-form__field">
+                <span>Senha</span>
                 <input
-                  type="checkbox"
-                  name="remember"
-                  checked={externalForm.remember}
+                  type="password"
+                  name="password"
+                  autoComplete="current-password"
+                  placeholder="********"
+                  value={internalForm.password}
+                  onChange={event => handleChange(event, setInternalForm)}
+                  disabled={isInternalLoading}
+                  required
+                />
+              </label>
+              <div className="login-form__row">
+                <label className="login-form__checkbox">
+                  <input
+                    type="checkbox"
+                    name="remember"
+                    checked={internalForm.remember}
+                    onChange={event => handleChange(event, setInternalForm)}
+                    disabled={isInternalLoading}
+                  />
+                  <span>Manter conectado</span>
+                </label>
+              </div>
+              {internalError ? (
+                <p className="login-form__error" role="alert">
+                  {internalError}
+                </p>
+              ) : null}
+              <button
+                className="login-form__submit"
+                type="submit"
+                disabled={isInternalLoading}
+              >
+                {isInternalLoading ? 'Entrando...' : 'Entrar'}
+              </button>
+            </form>
+          </div>
+
+          <div className="login-card">
+            <div className="login-card__header">
+              <h2>Acesso externo</h2>
+              <p>Para parceiros e colaboradores confiáveis.</p>
+            </div>
+            <form className="login-form" onSubmit={handleExternalSubmit}>
+              <label className="login-form__field">
+                <span>E-mail</span>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder="voce@parceiro.com"
+                  value={externalForm.email}
                   onChange={event => handleChange(event, setExternalForm)}
                   disabled={isExternalLoading}
+                  required
                 />
-                <span>Keep me signed in</span>
               </label>
-            </div>
-            {externalError ? (
-              <p className="login-form__error" role="alert">
-                {externalError}
-              </p>
-            ) : null}
-            <button
-              className="login-form__submit"
-              type="submit"
-              disabled={isExternalLoading}
-            >
-              {isExternalLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </form>
+              <label className="login-form__field">
+                <span>Senha</span>
+                <input
+                  type="password"
+                  name="password"
+                  autoComplete="current-password"
+                  placeholder="********"
+                  value={externalForm.password}
+                  onChange={event => handleChange(event, setExternalForm)}
+                  disabled={isExternalLoading}
+                  required
+                />
+              </label>
+              <div className="login-form__row">
+                <label className="login-form__checkbox">
+                  <input
+                    type="checkbox"
+                    name="remember"
+                    checked={externalForm.remember}
+                    onChange={event => handleChange(event, setExternalForm)}
+                    disabled={isExternalLoading}
+                  />
+                  <span>Manter conectado</span>
+                </label>
+              </div>
+              {externalError ? (
+                <p className="login-form__error" role="alert">
+                  {externalError}
+                </p>
+              ) : null}
+              <button
+                className="login-form__submit"
+                type="submit"
+                disabled={isExternalLoading}
+              >
+                {isExternalLoading ? 'Entrando...' : 'Entrar'}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
+
     </section>
   )
 }
 
 export default HomePage
+

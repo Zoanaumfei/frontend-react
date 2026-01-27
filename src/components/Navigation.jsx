@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+﻿import { NavLink } from 'react-router-dom'
 
 const getLinkClass = ({ isActive }) =>
   `nav__link${isActive ? ' nav__link--active' : ''}`
@@ -9,10 +9,16 @@ function Navigation() {
       <div className="nav__brand">Oryzem</div>
       <nav className="nav__links">
         <NavLink to="/" className={getLinkClass}>
-          Home
+          Início
         </NavLink>
         <NavLink to="/users" className={getLinkClass}>
-          Users
+          Usuários
+        </NavLink>
+        <NavLink to="/mission" className={getLinkClass}>
+          Nossa missão
+        </NavLink>
+        <NavLink to="/support" className={getLinkClass}>
+          Suporte
         </NavLink>
       </nav>
     </header>

@@ -1,4 +1,4 @@
-.app {
+﻿.app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -66,10 +66,17 @@
 
 .login-page {
   display: grid;
+  grid-template-rows: auto auto;
+  gap: 36px;
+  align-items: stretch;
+  min-height: calc(100vh - 120px);
+}
+
+.login-page__main {
+  display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: 32px;
   align-items: center;
-  min-height: calc(100vh - 120px);
 }
 
 .login-hero {
@@ -97,6 +104,8 @@
   color: var(--ink-muted);
   max-width: 520px;
 }
+
+
 
 .login-hero__grid {
   display: grid;
@@ -136,6 +145,51 @@
   animation: float-in 600ms ease-out 120ms both;
 }
 
+.login-page__info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.login-info-card {
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid rgba(22, 33, 43, 0.08);
+  box-shadow: 0 18px 36px rgba(22, 33, 43, 0.1);
+  display: grid;
+  gap: 10px;
+}
+
+.login-info-card__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.login-info-card h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.login-info-card p {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.login-info-card__link {
+  color: var(--accent-strong);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-info-card__link:hover {
+  text-decoration: underline;
+}
+
 .login-card__header h2 {
   margin: 0 0 8px;
   font-size: 1.6rem;
@@ -162,7 +216,14 @@
 .login-form--two-column .login-form__error,
 .login-form--two-column .login-form__success,
 .login-form--two-column .login-form__submit {
-  grid-column: 1 / -1;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+  box-shadow: 0 16px 30px rgba(15, 118, 110, 0.22);
 }
 
 .login-form__field {
@@ -288,7 +349,7 @@
 }
 
 .traffic-light--green {
-  background: #1f9d55;
+  background: var(--accent);
 }
 
 .login-form__error {
@@ -605,6 +666,462 @@
   color: var(--ink-muted);
 }
 
+.initiatives-hub {
+  display: grid;
+  gap: 20px;
+}
+
+.initiatives-hub__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 24px;
+  align-items: center;
+  padding: 28px;
+  border-radius: 20px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 65%);
+  box-shadow: 0 24px 50px rgba(15, 118, 110, 0.28);
+}
+
+.initiatives-hub__eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.initiatives-hub__title {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  line-height: 1.05;
+}
+
+.initiatives-hub__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.initiatives-hub__new {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--accent-strong);
+  background: #ffffff;
+  box-shadow: 0 18px 30px rgba(9, 35, 90, 0.22);
+  cursor: pointer;
+}
+
+.initiatives-hub__new:hover {
+  transform: translateY(-1px);
+}
+
+.initiatives-hub__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-alt);
+  border: 1px solid rgba(22, 33, 43, 0.12);
+  min-width: 240px;
+}
+
+.initiatives-hub__search-icon {
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.initiatives-hub__search input {
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  width: 100%;
+}
+
+.initiatives-hub__search input::placeholder {
+  color: var(--ink-muted);
+}
+
+.initiatives-hub__search input:focus {
+  outline: none;
+}
+
+.initiatives-hub__card {
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid rgba(22, 33, 43, 0.08);
+  box-shadow: 0 22px 46px rgba(22, 33, 43, 0.12);
+  overflow: hidden;
+}
+
+.initiatives-hub__table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.initiatives-hub__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.initiatives-hub__table thead th {
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  border-bottom: 1px solid rgba(22, 33, 43, 0.08);
+}
+
+.initiatives-hub__table tbody td {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(22, 33, 43, 0.06);
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+.initiatives-hub__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.initiative-cell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.initiative-cell__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--accent-strong);
+  background: rgba(15, 118, 110, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.28);
+}
+
+.initiative-cell__text {
+  display: grid;
+  gap: 2px;
+}
+
+.initiative-cell__text strong {
+  font-size: 1rem;
+}
+
+.initiative-cell__text span {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+}
+
+.responsible-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.responsible-cell__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-alt);
+  border: 1px solid rgba(22, 33, 43, 0.12);
+  color: var(--ink);
+  font-size: 0.85rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #ffffff;
+  min-width: 120px;
+  box-shadow: 0 12px 20px rgba(22, 33, 43, 0.18);
+}
+
+.status-pill--in-progress {
+  background: var(--accent);
+}
+
+.status-pill--completed {
+  background: var(--accent);
+}
+
+.status-pill--planning {
+  background: var(--highlight);
+  color: #1f2933;
+}
+
+.status-pill--on-hold {
+  background: #b42318;
+}
+
+.initiatives-hub__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 18px;
+  border-top: 1px solid rgba(22, 33, 43, 0.06);
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.initiatives-hub__meta {
+  margin: 0;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.initiatives-hub__pagination {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.page-btn {
+  border: 1px solid rgba(22, 33, 43, 0.15);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 700;
+  min-width: 76px;
+}
+
+.page-btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  min-width: 44px;
+  text-align: center;
+}
+
+
+.monthly-birthdays {
+  display: grid;
+  gap: 20px;
+}
+
+.monthly-birthdays__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 24px;
+  align-items: center;
+  padding: 28px;
+  border-radius: 20px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 65%);
+  box-shadow: 0 24px 50px rgba(15, 118, 110, 0.24);
+}
+
+.monthly-birthdays__eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.92;
+}
+
+.monthly-birthdays__title {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  line-height: 1.05;
+}
+
+.monthly-birthdays__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.monthly-birthdays__new {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--accent-strong);
+  background: #ffffff;
+  box-shadow: 0 18px 30px rgba(22, 33, 43, 0.18);
+  cursor: pointer;
+}
+
+.monthly-birthdays__new:hover {
+  transform: translateY(-1px);
+}
+
+.monthly-birthdays__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-alt);
+  border: 1px solid rgba(22, 33, 43, 0.12);
+  min-width: 240px;
+}
+
+.monthly-birthdays__search-icon {
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.monthly-birthdays__search input {
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  width: 100%;
+}
+
+.monthly-birthdays__search input::placeholder {
+  color: var(--ink-muted);
+}
+
+.monthly-birthdays__search input:focus {
+  outline: none;
+}
+
+.monthly-birthdays__card {
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid rgba(22, 33, 43, 0.08);
+  box-shadow: 0 22px 46px rgba(22, 33, 43, 0.12);
+  overflow: hidden;
+}
+
+.monthly-birthdays__table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.monthly-birthdays__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.monthly-birthdays__table thead th {
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  border-bottom: 1px solid rgba(22, 33, 43, 0.08);
+}
+
+.monthly-birthdays__table tbody td {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(22, 33, 43, 0.06);
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+.monthly-birthdays__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.birthday-cell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.birthday-cell__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--accent-strong);
+  background: rgba(15, 118, 110, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.28);
+}
+
+.birthday-cell__text {
+  display: grid;
+  gap: 2px;
+}
+
+.birthday-cell__text strong {
+  font-size: 1rem;
+}
+
+.birthday-cell__text span {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+}
+
+.birthday-area {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.birthday-note {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--surface-alt);
+  border: 1px solid rgba(22, 33, 43, 0.1);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.monthly-birthdays__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 18px;
+  border-top: 1px solid rgba(22, 33, 43, 0.06);
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.monthly-birthdays__meta {
+  margin: 0;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.monthly-birthdays__pagination {
+  display: inline-flex;
+  gap: 8px;
+}
 @keyframes float-in {
   from {
     opacity: 0;
@@ -639,8 +1156,11 @@
   }
 
   .login-page {
-    grid-template-columns: 1fr;
     min-height: auto;
+  }
+
+  .login-page__main {
+    grid-template-columns: 1fr;
   }
 
   .login-card {
@@ -674,6 +1194,46 @@
     align-items: flex-start;
   }
 
+  .initiatives-hub__hero {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .initiatives-hub__controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .initiatives-hub__search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .initiatives-hub__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .monthly-birthdays__hero {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .monthly-birthdays__controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .monthly-birthdays__search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .monthly-birthdays__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .dashboard__body {
     grid-template-columns: 1fr;
   }
@@ -697,3 +1257,11 @@
     gap: 12px;
   }
 }
+
+
+
+
+
+
+
+

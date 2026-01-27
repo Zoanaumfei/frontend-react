@@ -1,13 +1,18 @@
-import { Route, Routes } from 'react-router-dom'
+﻿import { Route, Routes } from 'react-router-dom'
 import AuthGuard from './components/AuthGuard'
 import Navigation from './components/Navigation'
 import HomePage from './pages/HomePage'
 import InternalDashboardPage from './pages/InternalDashboardPage'
+import InternalHomePage from './pages/InternalHomePage'
+import InitiativesHubPage from './pages/InitiativesHubPage'
+import MonthlyBirthdaysPage from './pages/MonthlyBirthdaysPage'
 import InternalNewRequestPage from './pages/InternalNewRequestPage'
 import LoginSuccessPage from './pages/LoginSuccessPage'
 import ExternalDashboardPage from './pages/ExternalDashboardPage'
 import ExternalRequestPage from './pages/ExternalRequestPage'
 import UsersPage from './pages/UsersPage'
+import OurMissionPage from './pages/OurMissionPage'
+import SupportPage from './pages/SupportPage'
 import { GROUPS } from './auth/auth.constants.js'
 import RequestDetailPage from './pages/RequestDetailPage'
 import './styles/app.css'
@@ -19,6 +24,32 @@ function App() {
       <main className="app__content">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route
+            path="/internal-home"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <InternalHomePage />
+              </AuthGuard>
+            }
+          />
+          <Route path="/mission" element={<OurMissionPage />} />
+          <Route
+            path="/initiatives-hub"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <InitiativesHubPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/monthly-birthdays"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <MonthlyBirthdaysPage />
+              </AuthGuard>
+            }
+          />
+          <Route path="/support" element={<SupportPage />} />
           <Route
             path="/welcome"
             element={
@@ -82,4 +113,8 @@ function App() {
 }
 
 export default App
+
+
+
+
 
