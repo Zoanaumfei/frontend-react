@@ -4,8 +4,10 @@ import Navigation from './components/Navigation'
 import HomePage from './pages/HomePage'
 import InternalDashboardPage from './pages/InternalDashboardPage'
 import InternalHomePage from './pages/InternalHomePage'
+import DashboardModePage from './pages/DashboardModePage'
 import InitiativesHubPage from './pages/InitiativesHubPage'
 import MonthlyBirthdaysPage from './pages/MonthlyBirthdaysPage'
+import ProjectMilestonesPage from './pages/ProjectMilestonesPage'
 import InternalNewRequestPage from './pages/InternalNewRequestPage'
 import LoginSuccessPage from './pages/LoginSuccessPage'
 import ExternalDashboardPage from './pages/ExternalDashboardPage'
@@ -32,6 +34,14 @@ function App() {
               </AuthGuard>
             }
           />
+          <Route
+            path="/dashboard-mode"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <DashboardModePage />
+              </AuthGuard>
+            }
+          />
           <Route path="/mission" element={<OurMissionPage />} />
           <Route
             path="/initiatives-hub"
@@ -46,6 +56,14 @@ function App() {
             element={
               <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
                 <MonthlyBirthdaysPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/project-milestones"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ProjectMilestonesPage />
               </AuthGuard>
             }
           />

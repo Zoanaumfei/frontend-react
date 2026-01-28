@@ -4,19 +4,28 @@ function InternalHomePage() {
   return (
     <section className="card" aria-labelledby="internal-home-title">
       <p className="dashboard__eyebrow">Área interna</p>
-      <h1 id="internal-home-title">Bem-vindo ao portal interno</h1>
+      <h1 id="internal-home-title">Bem-vindo ao portal interno para colaboradores</h1>
       <p className="dashboard__lead">
-        Acesse rapidamente os principais pontos de trabalho da área interna.
+        Acesse rapidamente as principais interfaces.
       </p>
-      <div className="dashboard__actions">
+      <div className="dashboard__actions dashboard__actions--spaced">
         <Link className="request-card__action" to="/internal-dashboard">
-          Ir para o dashboard interno
+          Dashboard de acordos de timing
         </Link>
         <Link className="request-card__action" to="/initiatives-hub">
-          Abrir o Initiatives Hub
+          Hub de iniciativas
         </Link>
         <Link className="request-card__action" to="/monthly-birthdays">
-          This Month's Birthdays
+          Aniversariantes do mes
+        </Link>
+        <Link className="request-card__action" to="/project-milestones">
+          Marcos do projeto
+        </Link>
+      </div>
+      <div className="dashboard__mode">
+        <p className="dashboard__mode-label">Modo de exibicao</p>
+        <Link className="request-card__action dashboard__mode-action" to="/dashboard-mode">
+          Dashboard mode
         </Link>
       </div>
     </section>

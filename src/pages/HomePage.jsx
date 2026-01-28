@@ -91,25 +91,25 @@ function HomePage() {
     <section className="login-page">
       <div className="login-page__main">
         <div className="login-hero">
-          <p className="login-hero__eyebrow">Portal de Fornecedores Oryzem</p>
-          <h1>Um portal para cada fluxo do fornecedor.</h1>
+          <p className="login-hero__eyebrow">PROVA DE CONCEITO - MVP 1.0</p>
+          <h1>Portal de fornecedores.</h1>
           <p className="login-hero__lead">
             Entre para gerenciar solicitações, acompanhar o status e colaborar
-            com nossas equipes internas em uma única experiência segura.
+            com nossas equipes em uma experiência segura.
           </p>
 
           <div className="login-hero__grid">
             <div className="login-hero__item">
-              <h3>Acesso centralizado</h3>
-              <p>Uma camada de identidade para cada recurso do fornecedor.</p>
+              <h3>Prova de conceito</h3>
+              <p>Projeto para testar o conceito de Portal para fornecedores.</p>
             </div>
             <div className="login-hero__item">
-              <h3>Pronto para auditoria</h3>
-              <p>Acompanhe aprovações, atualizações e decisões de entrega.</p>
+              <h3>Painel visual</h3>
+              <p>Acompanhe solicitações, eventos, e estratégia.</p>
             </div>
             <div className="login-hero__item">
-              <h3>Recuperação rápida</h3>
-              <p>Redefina senhas instantaneamente com os fluxos do Cognito.</p>
+              <h3>Informativo</h3>
+              <p>Ter os informativos centralizados em um unico lugar.</p>
             </div>
           </div>
         </div>
@@ -118,7 +118,7 @@ function HomePage() {
           <div className="login-card">
             <div className="login-card__header">
               <h2>Acesso interno</h2>
-              <p>Para colaboradores e equipes internas.</p>
+              <p>Para colaboradores.</p>
             </div>
             <form className="login-form" onSubmit={handleInternalSubmit}>
               <label className="login-form__field">
@@ -177,7 +177,7 @@ function HomePage() {
           <div className="login-card">
             <div className="login-card__header">
               <h2>Acesso externo</h2>
-              <p>Para parceiros e colaboradores confiáveis.</p>
+              <p>Para parceiros.</p>
             </div>
             <form className="login-form" onSubmit={handleExternalSubmit}>
               <label className="login-form__field">

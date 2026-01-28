@@ -11,28 +11,28 @@
     name: 'Bruno Costa',
     area: 'Qualidade',
     birthday: '2026-01-12',
-    note: 'Organizar cafe da manha',
+    note: 'Enviar mensagem no Teams',
   },
   {
     id: 'BDAY-003',
     name: 'Carla Souza',
     area: 'Logistica',
     birthday: '2026-01-18',
-    note: 'Reservar sala 3',
+    note: 'Enviar mensagem no Teams',
   },
   {
     id: 'BDAY-004',
     name: 'Diego Lima',
     area: 'Engenharia',
     birthday: '2026-01-24',
-    note: 'Comprar bolo',
+    note: 'Enviar mensagem no Teams',
   },
   {
     id: 'BDAY-005',
     name: 'Fernanda Alves',
     area: 'PMO',
     birthday: '2026-01-29',
-    note: 'Alinhar com RH',
+    note: 'Enviar mensagem no Teams',
   },
 ]
 
@@ -45,6 +45,19 @@ function formatBirthday(value) {
   })
 }
 
+function getBirthdayParts(value) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return { day: '--', month: '--' }
+  }
+  return {
+    day: date.toLocaleDateString('pt-BR', { day: '2-digit' }),
+    month: date
+      .toLocaleDateString('pt-BR', { month: 'short' })
+      .replace('.', ''),
+  }
+}
+
 function getInitials(name) {
   if (!name) return 'NA'
   const parts = name.trim().split(/\s+/)
@@ -55,79 +68,76 @@ function getInitials(name) {
 
 function MonthlyBirthdaysPage() {
   return (
-    <section className="monthly-birthdays" aria-labelledby="monthly-birthdays-title">
-      <header className="monthly-birthdays__hero">
-        <div>
-          <p className="monthly-birthdays__eyebrow">Aniversariantes do mes</p>
-          <h1 id="monthly-birthdays-title" className="monthly-birthdays__title">
-            Monthly Birthdays
-          </h1>
-        </div>
-        <div className="monthly-birthdays__controls">
-          <button type="button" className="monthly-birthdays__new">
-            Adicionar aniversariante
-          </button>
-          <label className="monthly-birthdays__search" aria-label="Buscar aniversariantes">
-            <span className="monthly-birthdays__search-icon" aria-hidden="true">
-              Buscar
-            </span>
-            <input type="search" name="birthdaySearch" placeholder="Buscar aniversariantes..." />
-          </label>
-        </div>
-      </header>
+    <section className="monthly-birthdays monthly-birthdays--playful" aria-labelledby="monthly-birthdays-title">
+      <div className="monthly-birthdays__floaters" aria-hidden="true">
+        <span className="balloon-float balloon-float--one">🎈</span>
+        <span className="balloon-float balloon-float--two">🎈</span>
+        <span className="balloon-float balloon-float--three">🎈</span>
+      </div>
+      <div className="monthly-birthdays__content">
+        <header className="monthly-birthdays__hero monthly-birthdays__hero--playful">
+          <div>
+            <p className="monthly-birthdays__eyebrow">Aniversariantes do mes</p>
+            <h1 id="monthly-birthdays-title" className="monthly-birthdays__title">
+              Monthly Birthdays
+            </h1>
+          </div>
+          <div className="monthly-birthdays__controls">
+            <button type="button" className="monthly-birthdays__new">
+              Adicionar aniversariante
+            </button>
+            <label className="monthly-birthdays__search" aria-label="Buscar aniversariantes">
+              <span className="monthly-birthdays__search-icon" aria-hidden="true">
+                Buscar
+              </span>
+              <input type="search" name="birthdaySearch" placeholder="Buscar aniversariantes..." />
+            </label>
+          </div>
+        </header>
 
-      <div className="monthly-birthdays__card">
-        <div className="monthly-birthdays__table-wrap">
-          <table className="monthly-birthdays__table">
-            <thead>
-              <tr>
-                <th scope="col">Colaborador</th>
-                <th scope="col">Area</th>
-                <th scope="col">Aniversario</th>
-                <th scope="col">Observacao</th>
-              </tr>
-            </thead>
-            <tbody>
-              {birthdays.map(person => (
-                <tr key={person.id}>
-                  <td>
-                    <div className="birthday-cell">
-                      <span className="birthday-cell__avatar" aria-hidden="true">
-                        {getInitials(person.name)}
-                      </span>
-                      <div className="birthday-cell__text">
-                        <strong>{person.name}</strong>
-                        <span>{person.id}</span>
-                      </div>
+        <div className="monthly-birthdays__card monthly-birthdays__card--playful">
+          <div className="monthly-birthdays__calendar" role="list">
+            {birthdays.map((person, index) => {
+              const { day, month } = getBirthdayParts(person.birthday)
+              return (
+                <article
+                  key={person.id}
+                  role="listitem"
+                  className={`birthday-card birthday-card--tone-${index % 4}`}
+                >
+                  <div className="birthday-card__date" aria-hidden="true">
+                    <span className="birthday-card__day">{day}</span>
+                    <span className="birthday-card__month">{month}</span>
+                  </div>
+                  <div className="birthday-card__content">
+                    <div className="birthday-card__avatar">{getInitials(person.name)}</div>
+                    <div>
+                      <h2 className="birthday-card__name">{person.name}</h2>
+                      <p className="birthday-card__meta">{person.area}</p>
                     </div>
-                  </td>
-                  <td>
-                    <span className="birthday-area">{person.area}</span>
-                  </td>
-                  <td>{formatBirthday(person.birthday)}</td>
-                  <td>
-                    <span className="birthday-note">{person.note}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                  <p className="birthday-card__note">{person.note}</p>
+                  <p className="birthday-card__full-date">{formatBirthday(person.birthday)}</p>
+                </article>
+              )
+            })}
+          </div>
 
-        <div className="monthly-birthdays__footer">
-          <p className="monthly-birthdays__meta">
-            Mostrando 1 a {birthdays.length} de {birthdays.length} aniversariantes
-          </p>
-          <div className="monthly-birthdays__pagination" role="navigation" aria-label="Paginacao">
-            <button type="button" className="page-btn" disabled>
-              Anterior
-            </button>
-            <span className="page-btn page-btn--active" aria-current="page">
-              1
-            </span>
-            <button type="button" className="page-btn" disabled>
-              Proxima
-            </button>
+          <div className="monthly-birthdays__footer monthly-birthdays__footer--playful">
+            <p className="monthly-birthdays__meta">
+              Mostrando 1 a {birthdays.length} de {birthdays.length} aniversariantes
+            </p>
+            <div className="monthly-birthdays__pagination" role="navigation" aria-label="Paginacao">
+              <button type="button" className="page-btn" disabled>
+                Anterior
+              </button>
+              <span className="page-btn page-btn--active" aria-current="page">
+                1
+              </span>
+              <button type="button" className="page-btn" disabled>
+                Proxima
+              </button>
+            </div>
           </div>
         </div>
       </div>
