@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getBirthdays } from '../services/birthdayService'
+import {
+  getBirthdays,
+  getBirthdaysCacheSnapshot,
+  refreshBirthdaysCache,
+} from '../services/birthdayService'
 
 const getMonthLabel = value => {
   const month = Number(value)
@@ -18,7 +22,7 @@ function getInitials(name) {
   return `${first}${second}`.toUpperCase()
 }
 
-function MonthlyBirthdaysPage() {
+function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
   const navigate = useNavigate()
   const [birthdays, setBirthdays] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -64,13 +68,21 @@ function MonthlyBirthdaysPage() {
   useEffect(() => {
     let isMounted = true
 
-    const loadBirthdays = async () => {
-      setIsLoading(true)
+    const applyBirthdays = data => {
+      if (!isMounted) return
+      setBirthdays(Array.isArray(data) ? data : [])
+    }
+
+    const refreshBirthdays = async ({ showLoading } = { showLoading: true }) => {
+      if (showLoading) {
+        setIsLoading(true)
+      }
       setErrorMessage('')
       try {
-        const data = await getBirthdays()
-        if (!isMounted) return
-        setBirthdays(Array.isArray(data) ? data : [])
+        const data = useCache
+          ? await refreshBirthdaysCache({})
+          : await getBirthdays()
+        applyBirthdays(data)
       } catch (error) {
         console.error('Failed to load birthdays:', error)
         if (!isMounted) return
@@ -82,11 +94,37 @@ function MonthlyBirthdaysPage() {
       }
     }
 
-    loadBirthdays()
+    if (useCache) {
+      const snapshot = getBirthdaysCacheSnapshot({}, cacheTtlMs)
+      const hasSnapshotData = Array.isArray(snapshot.data)
+      if (snapshot.data) {
+        applyBirthdays(snapshot.data)
+      }
+      setIsLoading(!hasSnapshotData)
+
+      if (!snapshot.isFresh) {
+        refreshBirthdays({ showLoading: !hasSnapshotData })
+      } else if (!snapshot.data) {
+        refreshBirthdays({ showLoading: true })
+      }
+
+      const intervalId = setInterval(() => {
+        refreshBirthdays({ showLoading: false })
+      }, cacheTtlMs)
+
+      return () => {
+        isMounted = false
+        clearInterval(intervalId)
+      }
+    }
+
+    setIsLoading(true)
+    refreshBirthdays()
+
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [useCache, cacheTtlMs])
 
   return (
     <section
