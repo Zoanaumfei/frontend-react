@@ -7,6 +7,7 @@ import InternalHomePage from './pages/InternalHomePage'
 import DashboardModePage from './pages/DashboardModePage'
 import InitiativesHubPage from './pages/InitiativesHubPage'
 import MonthlyBirthdaysPage from './pages/MonthlyBirthdaysPage'
+import MonthlyBirthdaysManagementPage from './pages/MonthlyBirthdaysManagementPage'
 import ProjectMilestonesPage from './pages/ProjectMilestonesPage'
 import InternalNewRequestPage from './pages/InternalNewRequestPage'
 import LoginSuccessPage from './pages/LoginSuccessPage'
@@ -17,6 +18,8 @@ import OurMissionPage from './pages/OurMissionPage'
 import SupportPage from './pages/SupportPage'
 import { GROUPS } from './auth/auth.constants.js'
 import RequestDetailPage from './pages/RequestDetailPage'
+import FirstAccessPage from './pages/FirstAccessPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import './styles/app.css'
 
 function App() {
@@ -26,6 +29,8 @@ function App() {
       <main className="app__content">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/first-access" element={<FirstAccessPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route
             path="/internal-home"
             element={
@@ -56,6 +61,14 @@ function App() {
             element={
               <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
                 <MonthlyBirthdaysPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/monthly-birthdays-management"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <MonthlyBirthdaysManagementPage />
               </AuthGuard>
             }
           />

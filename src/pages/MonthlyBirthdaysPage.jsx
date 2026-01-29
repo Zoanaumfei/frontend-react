@@ -1,61 +1,13 @@
-﻿const birthdays = [
-  {
-    id: 'BDAY-001',
-    name: 'Ana Silva',
-    area: 'Compras',
-    birthday: '2026-01-05',
-    note: 'Enviar mensagem no Teams',
-  },
-  {
-    id: 'BDAY-002',
-    name: 'Bruno Costa',
-    area: 'Qualidade',
-    birthday: '2026-01-12',
-    note: 'Enviar mensagem no Teams',
-  },
-  {
-    id: 'BDAY-003',
-    name: 'Carla Souza',
-    area: 'Logistica',
-    birthday: '2026-01-18',
-    note: 'Enviar mensagem no Teams',
-  },
-  {
-    id: 'BDAY-004',
-    name: 'Diego Lima',
-    area: 'Engenharia',
-    birthday: '2026-01-24',
-    note: 'Enviar mensagem no Teams',
-  },
-  {
-    id: 'BDAY-005',
-    name: 'Fernanda Alves',
-    area: 'PMO',
-    birthday: '2026-01-29',
-    note: 'Enviar mensagem no Teams',
-  },
-]
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getBirthdays } from '../services/birthdayService'
 
-function formatBirthday(value) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '--'
-  return date.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-  })
-}
-
-function getBirthdayParts(value) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) {
-    return { day: '--', month: '--' }
-  }
-  return {
-    day: date.toLocaleDateString('pt-BR', { day: '2-digit' }),
-    month: date
-      .toLocaleDateString('pt-BR', { month: 'short' })
-      .replace('.', ''),
-  }
+const getMonthLabel = value => {
+  const month = Number(value)
+  if (!month || month < 1 || month > 12) return '--'
+  return new Date(2026, month - 1, 1)
+    .toLocaleDateString('pt-BR', { month: 'short' })
+    .replace('.', '')
 }
 
 function getInitials(name) {
@@ -67,8 +19,80 @@ function getInitials(name) {
 }
 
 function MonthlyBirthdaysPage() {
+  const navigate = useNavigate()
+  const [birthdays, setBirthdays] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const currentMonth = new Date().getMonth() + 1
+  const currentYear = new Date().getFullYear()
+  const displayBirthdays = birthdays.flatMap(record => {
+    const items = []
+    const personalMonth = Number(record?.month)
+    const corporateMonth = Number(record?.corporate_month)
+
+    if (personalMonth === currentMonth) {
+      const birthYear = Number(record?.year)
+      const age = Number.isFinite(birthYear) ? currentYear - birthYear : null
+      items.push({
+        ...record,
+        type: 'personal',
+        displayMonth: personalMonth,
+        displayYear: record?.year,
+        displayDay: record?.day ?? '--',
+        displayAge: age,
+      })
+    }
+
+    if (corporateMonth === currentMonth) {
+      const corporateYear = Number(record?.corporate_year)
+      const tenure = Number.isFinite(corporateYear)
+        ? currentYear - corporateYear
+        : null
+      items.push({
+        ...record,
+        type: 'corporate',
+        displayMonth: corporateMonth,
+        displayYear: record?.corporate_year,
+        displayDay: '--',
+        displayAge: tenure,
+      })
+    }
+
+    return items
+  })
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadBirthdays = async () => {
+      setIsLoading(true)
+      setErrorMessage('')
+      try {
+        const data = await getBirthdays()
+        if (!isMounted) return
+        setBirthdays(Array.isArray(data) ? data : [])
+      } catch (error) {
+        console.error('Failed to load birthdays:', error)
+        if (!isMounted) return
+        setErrorMessage('Nao foi possivel carregar os aniversariantes.')
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadBirthdays()
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
-    <section className="monthly-birthdays monthly-birthdays--playful" aria-labelledby="monthly-birthdays-title">
+    <section
+      className="monthly-birthdays monthly-birthdays--playful"
+      aria-labelledby="monthly-birthdays-title"
+    >
       <div className="monthly-birthdays__floaters" aria-hidden="true">
         <span className="balloon-float balloon-float--one">🎈</span>
         <span className="balloon-float balloon-float--two">🎈</span>
@@ -83,8 +107,12 @@ function MonthlyBirthdaysPage() {
             </h1>
           </div>
           <div className="monthly-birthdays__controls">
-            <button type="button" className="monthly-birthdays__new">
-              Adicionar aniversariante
+            <button
+              type="button"
+              className="monthly-birthdays__new"
+              onClick={() => navigate('/monthly-birthdays-management')}
+            >
+              Manage birthdays
             </button>
             <label className="monthly-birthdays__search" aria-label="Buscar aniversariantes">
               <span className="monthly-birthdays__search-icon" aria-hidden="true">
@@ -97,27 +125,45 @@ function MonthlyBirthdaysPage() {
 
         <div className="monthly-birthdays__card monthly-birthdays__card--playful">
           <div className="monthly-birthdays__calendar" role="list">
-            {birthdays.map((person, index) => {
-              const { day, month } = getBirthdayParts(person.birthday)
+            {isLoading && (
+              <p className="monthly-birthdays__meta">Carregando aniversariantes...</p>
+            )}
+            {errorMessage && <p className="login-form__error">{errorMessage}</p>}
+            {!isLoading && !errorMessage && displayBirthdays.length === 0 && (
+              <p className="monthly-birthdays__meta">
+                Nenhum aniversariante encontrado para este mes.
+              </p>
+            )}
+            {displayBirthdays.map((person, index) => {
+              const monthLabel = getMonthLabel(person.displayMonth)
+              const monthLabelUpper =
+                monthLabel === '--' ? monthLabel : monthLabel.toUpperCase()
               return (
                 <article
-                  key={person.id}
+                  key={`${person.type}-${person.displayMonth}-${person.name}`}
                   role="listitem"
                   className={`birthday-card birthday-card--tone-${index % 4}`}
                 >
                   <div className="birthday-card__date" aria-hidden="true">
-                    <span className="birthday-card__day">{day}</span>
-                    <span className="birthday-card__month">{month}</span>
+                    <span className="birthday-card__day">{monthLabelUpper}</span>
+                    <span className="birthday-card__month">{person.displayDay}</span>
                   </div>
                   <div className="birthday-card__content">
                     <div className="birthday-card__avatar">{getInitials(person.name)}</div>
                     <div>
                       <h2 className="birthday-card__name">{person.name}</h2>
-                      <p className="birthday-card__meta">{person.area}</p>
+                      <p className="birthday-card__meta">
+                        {person.type === 'corporate'
+                          ? 'Este mes esta fazendo'
+                          : 'Este mes esta fazendo'}{' '}
+                        {Number.isFinite(person.displayAge)
+                          ? `${person.displayAge} anos${
+                              person.type === 'corporate' ? ' de empresa' : ''
+                            }`
+                          : '--'}
+                      </p>
                     </div>
                   </div>
-                  <p className="birthday-card__note">{person.note}</p>
-                  <p className="birthday-card__full-date">{formatBirthday(person.birthday)}</p>
                 </article>
               )
             })}
@@ -125,7 +171,7 @@ function MonthlyBirthdaysPage() {
 
           <div className="monthly-birthdays__footer monthly-birthdays__footer--playful">
             <p className="monthly-birthdays__meta">
-              Mostrando 1 a {birthdays.length} de {birthdays.length} aniversariantes
+              Mostrando {displayBirthdays.length} aniversariantes do mes
             </p>
             <div className="monthly-birthdays__pagination" role="navigation" aria-label="Paginacao">
               <button type="button" className="page-btn" disabled>

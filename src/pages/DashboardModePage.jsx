@@ -7,6 +7,8 @@ const SCROLL_SPEED_PX_PER_SECOND = 18
 const MIN_SCROLL_VIEWPORT = 320
 const SCROLL_VIEWPORT_PADDING = 0
 const PAGE_ADVANCE_DELAY_MS = 300
+const SCROLL_START_DELAY_MS = 500
+const SCROLL_END_DELAY_MS = 1000
 const VIEWS = [
   {
     id: 'initiatives',
@@ -49,13 +51,14 @@ function DashboardModePage() {
     let animationId
     let lastTime = 0
     let advanceTimeoutId
+    let startTimeoutId
 
     const advanceToNext = () => {
       if (advancingRef.current) return
       advancingRef.current = true
       advanceTimeoutId = setTimeout(() => {
         setActiveIndex(prev => (prev + 1) % VIEWS.length)
-      }, PAGE_ADVANCE_DELAY_MS)
+      }, PAGE_ADVANCE_DELAY_MS + SCROLL_END_DELAY_MS)
     }
 
     const scroll = time => {
@@ -80,11 +83,14 @@ function DashboardModePage() {
       animationId = requestAnimationFrame(scroll)
     }
 
-    animationId = requestAnimationFrame(scroll)
+    startTimeoutId = setTimeout(() => {
+      animationId = requestAnimationFrame(scroll)
+    }, SCROLL_START_DELAY_MS)
 
     return () => {
       cancelAnimationFrame(animationId)
       if (advanceTimeoutId) clearTimeout(advanceTimeoutId)
+      if (startTimeoutId) clearTimeout(startTimeoutId)
     }
   }, [activeIndex, autoScrollActive])
 

@@ -213,6 +213,14 @@
   grid-column: span 1;
 }
 
+.login-form--three-column {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.login-form--three-column .login-form__field {
+  grid-column: span 1;
+}
+
 .login-form--two-column .login-form__error,
 .login-form--two-column .login-form__success,
 .login-form--two-column .login-form__submit {
@@ -236,6 +244,30 @@
 .login-form__hint {
   font-size: 0.85rem;
   color: var(--ink-muted);
+}
+
+.password-rules {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.password-rule {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.password-rule__icon {
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.password-rule--ok .password-rule__icon {
+  color: var(--accent);
 }
 
 .login-form__field input {
@@ -721,7 +753,6 @@
 }
 
 .dashboard-mode__view {
-  animation: rise-in 600ms ease-out;
   overflow-y: auto;
   overscroll-behavior: contain;
 }

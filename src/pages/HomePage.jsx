@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../auth/auth.service'
 import { GROUPS } from '../auth/auth.constants.js'
 import { hasGroup } from '../auth/auth.groups.js'
@@ -158,6 +158,9 @@ function HomePage() {
                   />
                   <span>Manter conectado</span>
                 </label>
+                <Link className="login-form__link" to="/forgot-password">
+                  Esqueci minha senha
+                </Link>
               </div>
               {internalError ? (
                 <p className="login-form__error" role="alert">
@@ -217,6 +220,9 @@ function HomePage() {
                   />
                   <span>Manter conectado</span>
                 </label>
+                <Link className="login-form__link" to="/forgot-password">
+                  Esqueci minha senha
+                </Link>
               </div>
               {externalError ? (
                 <p className="login-form__error" role="alert">
@@ -240,4 +246,3 @@ function HomePage() {
 }
 
 export default HomePage
-
