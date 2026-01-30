@@ -280,6 +280,37 @@
   transition: border 200ms ease, box-shadow 200ms ease;
 }
 
+.login-form__field--with-toggle {
+  position: relative;
+}
+
+.login-form__field--with-toggle input {
+  padding-right: 44px;
+}
+
+.login-form__toggle {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--ink-muted);
+}
+
+.login-form__toggle img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.login-form__toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .login-form__field select {
   border: 1px solid rgba(22, 33, 43, 0.15);
   border-radius: 14px;
@@ -477,6 +508,31 @@
 .dashboard__mode-action {
   background: linear-gradient(120deg, var(--accent-strong), var(--accent));
   box-shadow: 0 14px 26px rgba(15, 118, 110, 0.22);
+}
+
+.internal-home__actions {
+  display: grid;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.internal-home__action {
+  width: 100%;
+  justify-content: space-between;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  box-shadow: 0 16px 30px rgba(15, 118, 110, 0.18);
+  background: linear-gradient(120deg, var(--accent-strong), var(--accent));
+}
+
+.internal-home__action::after {
+  content: "→";
+  font-size: 1.1rem;
+}
+
+.internal-home__action:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
 .dashboard__stat-label {
@@ -1308,8 +1364,8 @@
 }
 
 .birthday-card__avatar {
-  width: 46px;
-  height: 46px;
+  width: 96px;
+  height: 144px;
   border-radius: 14px;
   display: grid;
   place-items: center;
@@ -1317,6 +1373,14 @@
   color: #2d2730;
   background: rgba(255, 255, 255, 0.85);
   border: 2px solid rgba(255, 79, 216, 0.2);
+}
+
+.birthday-card__avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  display: block;
 }
 
 .birthday-card__name {

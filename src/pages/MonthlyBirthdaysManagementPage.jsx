@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createBirthday, deleteBirthday, getBirthdays } from '../services/birthdayService'
+import { FILE_UPLOAD_REFERENCES } from '../constants'
+import { uploadFileWithPresign } from '../utils/fileTransfer'
 
 function MonthlyBirthdaysManagementPage() {
+  const maxPhotoSizeBytes = 10 * 1024 * 1024
   const [formData, setFormData] = useState({
     month: 5,
     day: 18,
@@ -11,6 +14,8 @@ function MonthlyBirthdaysManagementPage() {
     corporateMonth: 6,
     corporateYear: 2021,
   })
+  const [photoFile, setPhotoFile] = useState(null)
+  const [photoError, setPhotoError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -61,6 +66,20 @@ function MonthlyBirthdaysManagementPage() {
     setSuccessMessage('')
 
     try {
+      if (photoError) {
+        setErrorMessage(photoError)
+        return
+      }
+      let photoKey = null
+      if (photoFile) {
+        const { key } = await uploadFileWithPresign(
+          photoFile,
+          FILE_UPLOAD_REFERENCES.monthlyBirthdayPhoto,
+          { errorMessage: 'Failed to upload photo.' },
+        )
+        photoKey = key
+      }
+
       const payload = {
         ...formData,
         day: Number(formData.day),
@@ -68,10 +87,13 @@ function MonthlyBirthdaysManagementPage() {
         year: Number(formData.year),
         corporate_month: Number(formData.corporateMonth),
         corporate_year: Number(formData.corporateYear),
+        ...(photoKey ? { photo_key: photoKey } : {}),
       }
-      await createBirthday(payload)
-      setSuccessMessage('Birthday added successfully.')
-      fetchBirthdays(lastQuery)
+        await createBirthday(payload)
+        setSuccessMessage('Birthday added successfully.')
+        setPhotoFile(null)
+        setPhotoError('')
+        fetchBirthdays(lastQuery)
     } catch (error) {
       console.error('Failed to add birthday:', error)
       setErrorMessage('Failed to add birthday. Please try again.')
@@ -197,6 +219,39 @@ function MonthlyBirthdaysManagementPage() {
             />
           </label>
         </div>
+        <label className="login-form__field" htmlFor="birthdayPhoto">
+          Photo
+          <input
+            id="birthdayPhoto"
+            name="photo"
+            type="file"
+            accept="image/*"
+            onChange={event => {
+              const file = event.target.files?.[0] || null
+              if (!file) {
+                setPhotoFile(null)
+                setPhotoError('')
+                return
+              }
+              if (!file.type.startsWith('image/')) {
+                setPhotoFile(null)
+                setPhotoError('Selecione apenas imagens.')
+                return
+              }
+              if (file.size > maxPhotoSizeBytes) {
+                setPhotoFile(null)
+                setPhotoError('O arquivo deve ter no máximo 10MB.')
+                return
+              }
+              setPhotoError('')
+              setPhotoFile(file)
+            }}
+          />
+        </label>
+        {photoError && <p className="login-form__error">{photoError}</p>}
+        {!photoError && (
+          <p className="login-form__hint">Máximo 10MB. Apenas imagens.</p>
+        )}
         <button type="submit" className="login-form__submit" disabled={isSaving}>
           {isSaving ? 'Saving...' : 'Add birthday'}
         </button>

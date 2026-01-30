@@ -8,17 +8,17 @@ function InternalHomePage() {
       <p className="dashboard__lead">
         Acesse rapidamente as principais interfaces.
       </p>
-      <div className="dashboard__actions dashboard__actions--spaced">
-        <Link className="request-card__action" to="/internal-dashboard">
+      <div className="dashboard__actions dashboard__actions--spaced internal-home__actions">
+        <Link className="request-card__action internal-home__action" to="/internal-dashboard">
           Dashboard de acordos de timing
         </Link>
-        <Link className="request-card__action" to="/initiatives-hub">
+        <Link className="request-card__action internal-home__action" to="/initiatives-hub">
           Hub de iniciativas
         </Link>
-        <Link className="request-card__action" to="/monthly-birthdays">
+        <Link className="request-card__action internal-home__action" to="/monthly-birthdays">
           Aniversariantes do mes
         </Link>
-        <Link className="request-card__action" to="/project-milestones">
+        <Link className="request-card__action internal-home__action" to="/project-milestones">
           Marcos do projeto
         </Link>
       </div>

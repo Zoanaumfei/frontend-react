@@ -204,7 +204,7 @@ function ForgotPasswordPage() {
                   </label>
                   <button
                     type="button"
-                    className="login-form__link"
+                    className="login-form__submit"
                     onClick={handleResendCode}
                     disabled={isLoading}
                   >

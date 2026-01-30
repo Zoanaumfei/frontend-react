@@ -5,6 +5,11 @@ export const createBirthday = async payload => {
   return response.data
 }
 
+export const updateBirthday = async payload => {
+  const response = await api.put('/api/v1/birthdays', payload)
+  return response.data
+}
+
 export const getBirthdays = async (params = {}) => {
   const response = await api.get('/api/v1/birthdays', { params })
   return response.data

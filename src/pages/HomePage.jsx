@@ -6,6 +6,8 @@ import { hasGroup } from '../auth/auth.groups.js'
 
 function HomePage() {
   const navigate = useNavigate()
+  const eyeOpenIcon = '/icons/eye-open.png'
+  const eyeClosedIcon = '/icons/eye-closed.png'
   const [internalForm, setInternalForm] = useState({
     email: '',
     password: '',
@@ -20,6 +22,8 @@ function HomePage() {
   const [externalError, setExternalError] = useState('')
   const [isInternalLoading, setIsInternalLoading] = useState(false)
   const [isExternalLoading, setIsExternalLoading] = useState(false)
+  const [showInternalPassword, setShowInternalPassword] = useState(false)
+  const [showExternalPassword, setShowExternalPassword] = useState(false)
 
   const handleChange = (event, setForm) => {
     const { name, value, type, checked } = event.target
@@ -134,10 +138,10 @@ function HomePage() {
                   required
                 />
               </label>
-              <label className="login-form__field">
+              <label className="login-form__field login-form__field--with-toggle">
                 <span>Senha</span>
                 <input
-                  type="password"
+                  type={showInternalPassword ? 'text' : 'password'}
                   name="password"
                   autoComplete="current-password"
                   placeholder="********"
@@ -146,6 +150,23 @@ function HomePage() {
                   disabled={isInternalLoading}
                   required
                 />
+                <button
+                  type="button"
+                  className="login-form__toggle"
+                  aria-label={showInternalPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                  onMouseDown={() => setShowInternalPassword(true)}
+                  onMouseUp={() => setShowInternalPassword(false)}
+                  onMouseLeave={() => setShowInternalPassword(false)}
+                  onTouchStart={() => setShowInternalPassword(true)}
+                  onTouchEnd={() => setShowInternalPassword(false)}
+                  disabled={isInternalLoading}
+                >
+                  <img
+                    src={showInternalPassword ? eyeOpenIcon : eyeClosedIcon}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </button>
               </label>
               <div className="login-form__row">
                 <label className="login-form__checkbox">
@@ -196,10 +217,10 @@ function HomePage() {
                   required
                 />
               </label>
-              <label className="login-form__field">
+              <label className="login-form__field login-form__field--with-toggle">
                 <span>Senha</span>
                 <input
-                  type="password"
+                  type={showExternalPassword ? 'text' : 'password'}
                   name="password"
                   autoComplete="current-password"
                   placeholder="********"
@@ -208,6 +229,23 @@ function HomePage() {
                   disabled={isExternalLoading}
                   required
                 />
+                <button
+                  type="button"
+                  className="login-form__toggle"
+                  aria-label={showExternalPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                  onMouseDown={() => setShowExternalPassword(true)}
+                  onMouseUp={() => setShowExternalPassword(false)}
+                  onMouseLeave={() => setShowExternalPassword(false)}
+                  onTouchStart={() => setShowExternalPassword(true)}
+                  onTouchEnd={() => setShowExternalPassword(false)}
+                  disabled={isExternalLoading}
+                >
+                  <img
+                    src={showExternalPassword ? eyeOpenIcon : eyeClosedIcon}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </button>
               </label>
               <div className="login-form__row">
                 <label className="login-form__checkbox">

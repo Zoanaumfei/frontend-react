@@ -5,6 +5,7 @@ import {
   getBirthdaysCacheSnapshot,
   refreshBirthdaysCache,
 } from '../services/birthdayService'
+import { getDownloadUrl } from '../utils/fileTransfer'
 
 const getMonthLabel = value => {
   const month = Number(value)
@@ -25,6 +26,7 @@ function getInitials(name) {
 function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
   const navigate = useNavigate()
   const [birthdays, setBirthdays] = useState([])
+  const [photoUrls, setPhotoUrls] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const currentMonth = new Date().getMonth() + 1
@@ -126,6 +128,49 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
     }
   }, [useCache, cacheTtlMs])
 
+  useEffect(() => {
+    let isMounted = true
+    const keys = Array.from(
+      new Set(
+        birthdays
+          .map(record => record?.photo_key)
+          .filter(key => typeof key === 'string' && key.length > 0),
+      ),
+    )
+    const missingKeys = keys.filter(key => !photoUrls[key])
+
+    if (missingKeys.length === 0) return () => {
+      isMounted = false
+    }
+
+    const loadPhotos = async () => {
+      try {
+        const entries = await Promise.all(
+          missingKeys.map(async key => {
+            const downloadUrl = await getDownloadUrl(key)
+            return [key, downloadUrl]
+          }),
+        )
+        if (!isMounted) return
+        setPhotoUrls(prev => {
+          const next = { ...prev }
+          entries.forEach(([key, url]) => {
+            if (url) next[key] = url
+          })
+          return next
+        })
+      } catch (error) {
+        console.error('Failed to load photo URLs:', error)
+      }
+    }
+
+    loadPhotos()
+
+    return () => {
+      isMounted = false
+    }
+  }, [birthdays, photoUrls])
+
   return (
     <section
       className="monthly-birthdays monthly-birthdays--playful"
@@ -187,7 +232,13 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
                     <span className="birthday-card__month">{person.displayDay}</span>
                   </div>
                   <div className="birthday-card__content">
-                    <div className="birthday-card__avatar">{getInitials(person.name)}</div>
+                    <div className="birthday-card__avatar">
+                      {person.photo_key && photoUrls[person.photo_key] ? (
+                        <img src={photoUrls[person.photo_key]} alt={person.name} />
+                      ) : (
+                        getInitials(person.name)
+                      )}
+                    </div>
                     <div>
                       <h2 className="birthday-card__name">{person.name}</h2>
                       <p className="birthday-card__meta">
