@@ -30,37 +30,26 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const currentMonth = new Date().getMonth() + 1
-  const currentYear = new Date().getFullYear()
   const displayBirthdays = birthdays.flatMap(record => {
     const items = []
     const personalMonth = Number(record?.month)
     const corporateMonth = Number(record?.corporate_month)
 
     if (personalMonth === currentMonth) {
-      const birthYear = Number(record?.year)
-      const age = Number.isFinite(birthYear) ? currentYear - birthYear : null
       items.push({
         ...record,
         type: 'personal',
         displayMonth: personalMonth,
-        displayYear: record?.year,
         displayDay: record?.day ?? '--',
-        displayAge: age,
       })
     }
 
     if (corporateMonth === currentMonth) {
-      const corporateYear = Number(record?.corporate_year)
-      const tenure = Number.isFinite(corporateYear)
-        ? currentYear - corporateYear
-        : null
       items.push({
         ...record,
         type: 'corporate',
         displayMonth: corporateMonth,
-        displayYear: record?.corporate_year,
         displayDay: '--',
-        displayAge: tenure,
       })
     }
 
@@ -237,14 +226,7 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
                     <div>
                       <h2 className="birthday-card__name">{person.name}</h2>
                       <p className="birthday-card__meta">
-                        {person.type === 'corporate'
-                          ? 'Este mes esta fazendo'
-                          : 'Este mes esta fazendo'}{' '}
-                        {Number.isFinite(person.displayAge)
-                          ? `${person.displayAge} anos${
-                              person.type === 'corporate' ? ' de empresa' : ''
-                            }`
-                          : '--'}
+                        Este mes esta fazendo aniversario
                       </p>
                     </div>
                   </div>

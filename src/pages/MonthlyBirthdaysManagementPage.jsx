@@ -10,7 +10,6 @@ function MonthlyBirthdaysManagementPage() {
     month: 5,
     day: 18,
     name: 'Maria Silva',
-    year: 1992,
     corporateMonth: 6,
     corporateYear: 2021,
   })
@@ -84,7 +83,6 @@ function MonthlyBirthdaysManagementPage() {
         ...formData,
         day: Number(formData.day),
         month: Number(formData.month),
-        year: Number(formData.year),
         corporate_month: Number(formData.corporateMonth),
         corporate_year: Number(formData.corporateYear),
         ...(photoKey ? { photo_key: photoKey } : {}),
@@ -173,19 +171,6 @@ function MonthlyBirthdaysManagementPage() {
               min="1"
               max="31"
               value={formData.day}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label className="login-form__field" htmlFor="birthdayYear">
-            Year
-            <input
-              id="birthdayYear"
-              name="year"
-              type="number"
-              min="1900"
-              max="2100"
-              value={formData.year}
               onChange={handleChange}
               required
             />
@@ -297,7 +282,6 @@ function MonthlyBirthdaysManagementPage() {
               <th>Name</th>
               <th>Month</th>
               <th>Day</th>
-              <th>Year</th>
               <th>Corporate Month</th>
               <th>Corporate Year</th>
               <th>Actions</th>
@@ -306,7 +290,7 @@ function MonthlyBirthdaysManagementPage() {
           <tbody>
             {birthdays.length === 0 && !isLoading ? (
               <tr>
-                <td colSpan={7}>No birthdays found.</td>
+                <td colSpan={6}>No birthdays found.</td>
               </tr>
             ) : (
               birthdays.map(record => (
@@ -314,7 +298,6 @@ function MonthlyBirthdaysManagementPage() {
                   <td>{record.name}</td>
                   <td>{record.month}</td>
                   <td>{record.day}</td>
-                  <td>{record.year}</td>
                   <td>{record.corporate_month}</td>
                   <td>{record.corporate_year}</td>
                   <td>
