@@ -30,6 +30,7 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const currentMonth = new Date().getMonth() + 1
+  const currentYear = new Date().getFullYear()
   const displayBirthdays = birthdays.flatMap(record => {
     const items = []
     const personalMonth = Number(record?.month)
@@ -45,11 +46,16 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
     }
 
     if (corporateMonth === currentMonth) {
+      const corporateYear = Number(record?.corporate_year)
+      const tenure = Number.isFinite(corporateYear)
+        ? currentYear - corporateYear
+        : null
       items.push({
         ...record,
         type: 'corporate',
         displayMonth: corporateMonth,
         displayDay: '--',
+        displayTenure: tenure,
       })
     }
 
@@ -226,7 +232,13 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
                     <div>
                       <h2 className="birthday-card__name">{person.name}</h2>
                       <p className="birthday-card__meta">
-                        Este mes esta fazendo aniversario
+                        {person.type === 'corporate'
+                          ? `Este mes esta fazendo ${
+                              Number.isFinite(person.displayTenure)
+                                ? `${person.displayTenure} anos de empresa`
+                                : '--'
+                            }`
+                          : 'Este mes esta fazendo aniversario'}
                       </p>
                     </div>
                   </div>
