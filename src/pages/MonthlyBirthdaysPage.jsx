@@ -176,11 +176,6 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
       className="monthly-birthdays monthly-birthdays--playful"
       aria-labelledby="monthly-birthdays-title"
     >
-      <div className="monthly-birthdays__floaters" aria-hidden="true">
-        <span className="balloon-float balloon-float--one">🎈</span>
-        <span className="balloon-float balloon-float--two">🎈</span>
-        <span className="balloon-float balloon-float--three">🎈</span>
-      </div>
       <div className="monthly-birthdays__content">
         <header className="monthly-birthdays__hero monthly-birthdays__hero--playful">
           <div>
