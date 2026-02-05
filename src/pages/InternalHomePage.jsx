@@ -21,6 +21,9 @@ function InternalHomePage() {
         <Link className="request-card__action internal-home__action" to="/project-milestones">
           Marcos do projeto
         </Link>
+        <Link className="request-card__action internal-home__action" to="/project-management">
+          ProjectManagement
+        </Link>
       </div>
       <div className="dashboard__mode">
         <p className="dashboard__mode-label">Modo de exibicao</p>

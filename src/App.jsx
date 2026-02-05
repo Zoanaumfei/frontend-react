@@ -9,6 +9,8 @@ import InitiativesHubPage from './pages/InitiativesHubPage'
 import MonthlyBirthdaysPage from './pages/MonthlyBirthdaysPage'
 import MonthlyBirthdaysManagementPage from './pages/MonthlyBirthdaysManagementPage'
 import ProjectMilestonesPage from './pages/ProjectMilestonesPage'
+import ProjectManagementPage from './pages/ProjectManagementPage'
+import NewProjectCreationPage from './pages/NewProjectCreationPage'
 import InternalNewRequestPage from './pages/InternalNewRequestPage'
 import LoginSuccessPage from './pages/LoginSuccessPage'
 import ExternalDashboardPage from './pages/ExternalDashboardPage'
@@ -77,6 +79,22 @@ function App() {
             element={
               <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
                 <ProjectMilestonesPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/project-management"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ProjectManagementPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/new-project-creation"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <NewProjectCreationPage />
               </AuthGuard>
             }
           />
