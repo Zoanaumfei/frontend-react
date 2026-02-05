@@ -82,9 +82,14 @@ function createAlsEntry(index) {
   )
 }
 
+function getAlsKey(entry, index) {
+  const match = entry.als?.match(/\d+$/)
+  return match ? match[0] : String(index + 1)
+}
+
 function buildGridDates(alsEntries) {
   return alsEntries.reduce((acc, entry, index) => {
-    const alsKey = String(index + 1)
+    const alsKey = getAlsKey(entry, index)
 
     const byGate = GATES.reduce((gatesAcc, gate) => {
       const byPhase = PHASES.reduce((phasesAcc, phase) => {
@@ -93,15 +98,22 @@ function buildGridDates(alsEntries) {
         const gateValue = gateFieldKey ? (entry[gateFieldKey] || '').trim() : ''
         const fallbackValue = defaultFieldKey ? (entry[defaultFieldKey] || '').trim() : ''
 
-        phasesAcc[phase] = gateValue || fallbackValue || ''
+        const resolvedValue = gateValue || fallbackValue
+        if (resolvedValue) {
+          phasesAcc[phase] = resolvedValue
+        }
         return phasesAcc
       }, {})
 
-      gatesAcc[gate] = byPhase
+      if (Object.keys(byPhase).length > 0) {
+        gatesAcc[gate] = byPhase
+      }
       return gatesAcc
     }, {})
 
-    acc[alsKey] = byGate
+    if (Object.keys(byGate).length > 0) {
+      acc[alsKey] = byGate
+    }
     return acc
   }, {})
 }
