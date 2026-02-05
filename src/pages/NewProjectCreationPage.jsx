@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createProject } from '../services/projectService'
-import { weekYearToDate } from '../utils/weekDate'
+import { dateToYmd, weekYearToDate } from '../utils/weekDate'
 
 const MAX_ALS_FIELDS = 8
 const WEEK_YEAR_PATTERN = '^(0[1-9]|[1-4][0-9]|5[0-3])\\/\\d{2}$'
@@ -36,7 +36,18 @@ const ALS_LAYOUT_ROWS = [
   {
     className: 'new-project-creation__als-row--four',
     fields: [
+      { key: 'tppaZp5', label: 'TPPA ZP5' },
+      { key: 'tppaElet', label: 'TPPA ELET' },
+      { key: 'tppaZp7', label: 'TPPA ZP7' },
       { key: 'tppa', label: 'TPPA' },
+    ],
+  },
+  {
+    className: 'new-project-creation__als-row--four',
+    fields: [
+      { key: 'sopZp5', label: 'SOP ZP5' },
+      { key: 'sopElet', label: 'SOP ELET' },
+      { key: 'sopZp7', label: 'SOP ZP7' },
       { key: 'sop', label: 'SOP' },
     ],
   },
@@ -54,16 +65,22 @@ const FIELD_BY_GATE_AND_PHASE = {
     VFF: 'tbtVffZp5',
     PVS: 'tbtPvsZp5',
     SO: 'tbtS0Zp5',
+    TPPA: 'tppaZp5',
+    SOP: 'sopZp5',
   },
   ELET: {
     VFF: 'tbtVffElet',
     PVS: 'tbtPvsElet',
     SO: 'tbtS0Elet',
+    TPPA: 'tppaElet',
+    SOP: 'sopElet',
   },
   ZP7: {
     VFF: 'tbtVffZp7',
     PVS: 'tbtPvsZp7',
     SO: 'tbtS0Zp7',
+    TPPA: 'tppaZp7',
+    SOP: 'sopZp7',
   },
 }
 
@@ -157,13 +174,21 @@ function NewProjectCreationPage() {
           const value = (entry[key] || '').trim()
           if (!value) continue
 
-          if (!weekYearToDate(value)) {
+          const parsed = weekYearToDate(value)
+          if (!parsed) {
             throw new Error(
               `Invalid ${entry.als} ${ALS_FIELD_LABELS[key]} format. Use WW/YY.`,
             )
           }
 
-          normalized[key] = value
+          const formatted = dateToYmd(parsed)
+          if (!formatted) {
+            throw new Error(
+              `Invalid ${entry.als} ${ALS_FIELD_LABELS[key]} value.`,
+            )
+          }
+
+          normalized[key] = formatted
         }
 
         return normalized

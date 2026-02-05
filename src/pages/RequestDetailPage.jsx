@@ -87,7 +87,7 @@ function RequestDetailPage() {
               {dateToWeekYear(ymdToDate(item.tbtVffDate)) || '—'}
             </strong>
             <small className="detail-item__hint">
-              {item.tbtVffDate || 'YYYY/MM/DD'}
+              {item.tbtVffDate || 'YYYY-MM-DD'}
             </small>
           </div>
           <div className="detail-item">
@@ -96,7 +96,7 @@ function RequestDetailPage() {
               {dateToWeekYear(ymdToDate(item.tbtPvsDate)) || '—'}
             </strong>
             <small className="detail-item__hint">
-              {item.tbtPvsDate || 'YYYY/MM/DD'}
+              {item.tbtPvsDate || 'YYYY-MM-DD'}
             </small>
           </div>
           <div className="detail-item">
@@ -105,14 +105,14 @@ function RequestDetailPage() {
               {dateToWeekYear(ymdToDate(item.tbt0sDate)) || '—'}
             </strong>
             <small className="detail-item__hint">
-              {item.tbt0sDate || 'YYYY/MM/DD'}
+              {item.tbt0sDate || 'YYYY-MM-DD'}
             </small>
           </div>
           <div className="detail-item">
             <span>SOP</span>
             <strong>{dateToWeekYear(ymdToDate(item.sopDate)) || '—'}</strong>
             <small className="detail-item__hint">
-              {item.sopDate || 'YYYY/MM/DD'}
+              {item.sopDate || 'YYYY-MM-DD'}
             </small>
           </div>
           <div className="detail-item">

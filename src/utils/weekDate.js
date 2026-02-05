@@ -46,13 +46,13 @@ export const dateToYmd = value => {
   const month = String(date.getUTCMonth() + 1).padStart(2, '0')
   const day = String(date.getUTCDate()).padStart(2, '0')
 
-  return `${year}/${month}/${day}`
+  return `${year}-${month}-${day}`
 }
 
 export const ymdToDate = value => {
   if (!value || typeof value !== 'string') return null
 
-  const match = value.trim().match(/^(\d{4})\/(\d{2})\/(\d{2})$/)
+  const match = value.trim().match(/^(\d{4})[-/](\d{2})[-/](\d{2})$/)
   if (!match) return null
 
   const year = Number(match[1])

@@ -152,7 +152,7 @@ function InternalNewRequestPage() {
             required
           />
           <span className="login-form__hint">
-            {dateToYmd(weekYearToDate(formData.tbtVff)) || 'YYYY/MM/DD'}
+            {dateToYmd(weekYearToDate(formData.tbtVff)) || 'YYYY-MM-DD'}
           </span>
         </label>
         <label className="login-form__field">
@@ -167,7 +167,7 @@ function InternalNewRequestPage() {
             required
           />
           <span className="login-form__hint">
-            {dateToYmd(weekYearToDate(formData.tbtPvs)) || 'YYYY/MM/DD'}
+            {dateToYmd(weekYearToDate(formData.tbtPvs)) || 'YYYY-MM-DD'}
           </span>
         </label>
         <label className="login-form__field">
@@ -182,7 +182,7 @@ function InternalNewRequestPage() {
             required
           />
           <span className="login-form__hint">
-            {dateToYmd(weekYearToDate(formData.tbt0s)) || 'YYYY/MM/DD'}
+            {dateToYmd(weekYearToDate(formData.tbt0s)) || 'YYYY-MM-DD'}
           </span>
         </label>
         <label className="login-form__field">
@@ -197,7 +197,7 @@ function InternalNewRequestPage() {
             required
           />
           <span className="login-form__hint">
-            {dateToYmd(weekYearToDate(formData.sop)) || 'YYYY/MM/DD'}
+            {dateToYmd(weekYearToDate(formData.sop)) || 'YYYY-MM-DD'}
           </span>
         </label>
 
