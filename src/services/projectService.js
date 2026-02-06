@@ -30,3 +30,9 @@ export const createProject = async (payload, idempotencyKey = createIdempotencyK
   })
   return response.data
 }
+
+export const getDueEventsByDate = async date => {
+  if (!date) return { items: [] }
+  const response = await api.get(`/api/v1/due/${date}`)
+  return response.data
+}

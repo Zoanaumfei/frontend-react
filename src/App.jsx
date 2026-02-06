@@ -8,8 +8,8 @@ import DashboardModePage from './pages/DashboardModePage'
 import InitiativesHubPage from './pages/InitiativesHubPage'
 import MonthlyBirthdaysPage from './pages/MonthlyBirthdaysPage'
 import MonthlyBirthdaysManagementPage from './pages/MonthlyBirthdaysManagementPage'
-import ProjectMilestonesPage from './pages/ProjectMilestonesPage'
 import ProjectManagementPage from './pages/ProjectManagementPage'
+import ProjectDashboardPage from './pages/ProjectDashboardPage'
 import NewProjectCreationPage from './pages/NewProjectCreationPage'
 import InternalNewRequestPage from './pages/InternalNewRequestPage'
 import LoginSuccessPage from './pages/LoginSuccessPage'
@@ -75,18 +75,18 @@ function App() {
             }
           />
           <Route
-            path="/project-milestones"
-            element={
-              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
-                <ProjectMilestonesPage />
-              </AuthGuard>
-            }
-          />
-          <Route
             path="/project-management"
             element={
               <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
                 <ProjectManagementPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/project-dashboard"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ProjectDashboardPage />
               </AuthGuard>
             }
           />

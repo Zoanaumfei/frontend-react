@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import InitiativesHubPage from './InitiativesHubPage'
 import MonthlyBirthdaysPage from './MonthlyBirthdaysPage'
-import ProjectMilestonesPage from './ProjectMilestonesPage'
+import ProjectDashboardPage from './ProjectDashboardPage'
+import { clearBirthdaysCache } from '../services/birthdayService'
+import { clearBirthdayPhotoCache } from '../services/birthdayPhotoCache'
+import { clearProjectDashboardCache } from '../services/projectDashboardCache'
 
 const MIN_SCROLL_VIEWPORT = 320
 const SCROLL_VIEWPORT_PADDING = 0
@@ -14,20 +17,21 @@ const MAX_SCROLL_SPEED_PX_PER_SECOND = 120
 const BIRTHDAYS_CACHE_TTL_MS = 60 * 60 * 1000
 const VIEWS = [
   {
-    id: 'initiatives',
-    label: 'Initiatives Hub',
-    Component: InitiativesHubPage,
-  },
-  {
     id: 'birthdays',
     label: 'Monthly Birthdays',
     Component: MonthlyBirthdaysPage,
-    props: { useCache: true, cacheTtlMs: BIRTHDAYS_CACHE_TTL_MS },
+    props: { useCache: true, cacheTtlMs: BIRTHDAYS_CACHE_TTL_MS, autoRefresh: false },
   },
   {
-    id: 'milestones',
-    label: 'Project Milestones',
-    Component: ProjectMilestonesPage,
+    id: 'project-dashboard',
+    label: 'Project Dashboard',
+    Component: ProjectDashboardPage,
+    props: { useCache: true },
+  },
+  {
+    id: 'initiatives',
+    label: 'Initiatives Hub',
+    Component: InitiativesHubPage,
   },
 ]
 
@@ -36,9 +40,20 @@ function DashboardModePage() {
   const [showOverlay, setShowOverlay] = useState(true)
   const [autoScrollActive, setAutoScrollActive] = useState(false)
   const [scrollViewportHeight, setScrollViewportHeight] = useState(null)
+  const [contentVersion, setContentVersion] = useState(0)
   const scrollContainerRef = useRef(null)
+  const scrollContentRef = useRef(null)
   const advancingRef = useRef(false)
   const scrollPositionRef = useRef(0)
+
+  useEffect(
+    () => () => {
+      clearBirthdaysCache()
+      clearBirthdayPhotoCache()
+      clearProjectDashboardCache()
+    },
+    [],
+  )
 
   const activeView = VIEWS[activeIndex]
   const ActiveComponent = activeView.Component
@@ -133,6 +148,28 @@ function DashboardModePage() {
       if (startTimeoutId) clearTimeout(startTimeoutId)
       if (holdTimeoutId) clearTimeout(holdTimeoutId)
     }
+  }, [activeIndex, autoScrollActive, contentVersion])
+
+  useEffect(() => {
+    if (!autoScrollActive) return
+
+    const target = scrollContentRef.current
+    if (!target || typeof ResizeObserver === 'undefined') return
+
+    let rafId
+    const observer = new ResizeObserver(() => {
+      if (rafId) cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        setContentVersion(prev => prev + 1)
+      })
+    })
+
+    observer.observe(target)
+
+    return () => {
+      observer.disconnect()
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [activeIndex, autoScrollActive])
 
   useEffect(() => {
@@ -196,7 +233,9 @@ function DashboardModePage() {
         ref={scrollContainerRef}
         style={scrollViewportHeight ? { height: `${scrollViewportHeight}px` } : undefined}
       >
-        <ActiveComponent {...activeProps} />
+        <div ref={scrollContentRef}>
+          <ActiveComponent {...activeProps} />
+        </div>
       </div>
     </section>
   )

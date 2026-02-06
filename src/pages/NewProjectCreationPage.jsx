@@ -95,7 +95,7 @@ const DEFAULT_FIELD_BY_PHASE = {
 function createAlsEntry(index) {
   return ALS_OPTIONAL_FIELDS.reduce(
     (acc, field) => ({ ...acc, [field.key]: '' }),
-    { als: `ALS${index}` }
+    { als: `ALS${index}`, alsDescription: '' }
   )
 }
 
@@ -135,6 +135,17 @@ function buildGridDates(alsEntries) {
   }, {})
 }
 
+function buildAlsDescriptions(alsEntries) {
+  return alsEntries.reduce((acc, entry, index) => {
+    const alsKey = getAlsKey(entry, index)
+    const description = (entry.alsDescription || '').trim()
+    if (description) {
+      acc[alsKey] = description
+    }
+    return acc
+  }, {})
+}
+
 function NewProjectCreationPage() {
   const [formData, setFormData] = useState({
     projectID: '',
@@ -165,6 +176,13 @@ function NewProjectCreationPage() {
 
       if (!projectId || !projectName) {
         throw new Error('ProjectID and ProjectName are required.')
+      }
+
+      for (const entry of alsFields) {
+        const description = (entry.alsDescription || '').trim()
+        if (!description) {
+          throw new Error(`${entry.als} description is required.`)
+        }
       }
 
       const normalizedAls = alsFields.map(entry => {
@@ -198,6 +216,7 @@ function NewProjectCreationPage() {
         projectId,
         projectName,
         grid: {
+          alsDescriptions: buildAlsDescriptions(alsFields),
           dates: buildGridDates(normalizedAls),
         },
       })
@@ -282,6 +301,21 @@ function NewProjectCreationPage() {
               <label className="login-form__field">
                 <span>ALS</span>
                 <input type="text" value={alsEntry.als} readOnly />
+              </label>
+            </div>
+            <div className="new-project-creation__als-row new-project-creation__als-row--wide">
+              <label className="login-form__field">
+                <span>ALS Description *</span>
+                <input
+                  type="text"
+                  value={alsEntry.alsDescription}
+                  onChange={event =>
+                    handleAlsFieldChange(entryIndex, 'alsDescription', event.target.value)
+                  }
+                  placeholder="Describe this ALS"
+                  disabled={isLoading}
+                  required
+                />
               </label>
             </div>
 

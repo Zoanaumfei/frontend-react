@@ -5,6 +5,7 @@ import {
   getBirthdaysCacheSnapshot,
   refreshBirthdaysCache,
 } from '../services/birthdayService'
+import { getCachedPhotoUrl, setCachedPhotoUrl } from '../services/birthdayPhotoCache'
 import { getDownloadUrl } from '../utils/fileTransfer'
 
 const getMonthLabel = value => {
@@ -23,7 +24,11 @@ function getInitials(name) {
   return `${first}${second}`.toUpperCase()
 }
 
-function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
+function MonthlyBirthdaysPage({
+  useCache = false,
+  cacheTtlMs = 3600000,
+  autoRefresh = true,
+}) {
   const navigate = useNavigate()
   const [birthdays, setBirthdays] = useState([])
   const [photoUrls, setPhotoUrls] = useState({})
@@ -99,19 +104,22 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
       }
       setIsLoading(!hasSnapshotData)
 
-      if (!snapshot.isFresh) {
-        refreshBirthdays({ showLoading: !hasSnapshotData })
-      } else if (!snapshot.data) {
+      if (!hasSnapshotData) {
         refreshBirthdays({ showLoading: true })
+      } else if (!snapshot.isFresh && autoRefresh) {
+        refreshBirthdays({ showLoading: false })
       }
 
-      const intervalId = setInterval(() => {
-        refreshBirthdays({ showLoading: false })
-      }, cacheTtlMs)
+      let intervalId
+      if (autoRefresh) {
+        intervalId = setInterval(() => {
+          refreshBirthdays({ showLoading: false })
+        }, cacheTtlMs)
+      }
 
       return () => {
         isMounted = false
-        clearInterval(intervalId)
+        if (intervalId) clearInterval(intervalId)
       }
     }
 
@@ -132,7 +140,30 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
           .filter(key => typeof key === 'string' && key.length > 0),
       ),
     )
-    const missingKeys = keys.filter(key => !photoUrls[key])
+    const cachedEntries = useCache
+      ? keys
+          .map(key => [key, getCachedPhotoUrl(key)])
+          .filter(([, url]) => typeof url === 'string' && url.length > 0)
+      : []
+
+    if (useCache && cachedEntries.length > 0) {
+      const cacheUpdates = cachedEntries.filter(([key]) => !photoUrls[key])
+      if (cacheUpdates.length > 0) {
+        setPhotoUrls(prev => {
+          const next = { ...prev }
+          cacheUpdates.forEach(([key, url]) => {
+            next[key] = url
+          })
+          return next
+        })
+      }
+    }
+
+    const missingKeys = keys.filter(key => {
+      if (photoUrls[key]) return false
+      if (useCache && getCachedPhotoUrl(key)) return false
+      return true
+    })
 
     if (missingKeys.length === 0) return () => {
       isMounted = false
@@ -154,6 +185,11 @@ function MonthlyBirthdaysPage({ useCache = false, cacheTtlMs = 3600000 }) {
           })
           return next
         })
+        if (useCache) {
+          entries.forEach(([key, url]) => {
+            if (url) setCachedPhotoUrl(key, url)
+          })
+        }
       } catch (error) {
         console.error('Failed to load photo URLs:', error)
       }

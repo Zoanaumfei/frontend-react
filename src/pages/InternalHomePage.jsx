@@ -18,8 +18,8 @@ function InternalHomePage() {
         <Link className="request-card__action internal-home__action" to="/monthly-birthdays">
           Aniversariantes do mes
         </Link>
-        <Link className="request-card__action internal-home__action" to="/project-milestones">
-          Marcos do projeto
+        <Link className="request-card__action internal-home__action" to="/project-dashboard">
+          Project Dashboard
         </Link>
         <Link className="request-card__action internal-home__action" to="/project-management">
           ProjectManagement

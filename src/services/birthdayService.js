@@ -45,6 +45,10 @@ export const getBirthdaysCached = async (params = {}, maxAgeMs = 3600000) => {
   return refreshBirthdaysCache(params)
 }
 
+export const clearBirthdaysCache = () => {
+  birthdaysCache.clear()
+}
+
 export const deleteBirthday = async (month, name) => {
   const response = await api.delete(
     `/api/v1/birthdays/${encodeURIComponent(month)}/${encodeURIComponent(name)}`,
