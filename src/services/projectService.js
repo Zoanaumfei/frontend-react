@@ -55,8 +55,24 @@ export const updateProject = async (
   return response.data
 }
 
-export const getDueEventsByDate = async date => {
-  if (!date) return { items: [] }
-  const response = await api.get(API_PATHS.dueByDate(date))
+export const getDueEventsByRange = async ({
+  startDate,
+  days = 21,
+  limit,
+} = {}) => {
+  if (!startDate) return { startDate: null, days: 0, dates: [] }
+
+  const normalizedDays = Number(days) > 0 ? Number(days) : 21
+  const normalizedLimit = Number(limit)
+  const params = {
+    startDate,
+    days: normalizedDays,
+  }
+
+  if (Number.isFinite(normalizedLimit) && normalizedLimit > 0) {
+    params.limit = normalizedLimit
+  }
+
+  const response = await api.get(API_PATHS.dueByRange, { params })
   return response.data
 }

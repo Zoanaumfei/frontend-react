@@ -4,7 +4,7 @@ import {
   getProjectDashboardCache,
   setProjectDashboardCache,
 } from '../services/projectDashboardCache'
-import { getDueEventsByDate } from '../services/projectService'
+import { getDueEventsByRange } from '../services/projectService'
 
 const getStartOfIsoWeek = value => {
   const date = new Date(value)
@@ -17,20 +17,8 @@ const getStartOfIsoWeek = value => {
   return utcDate
 }
 
-const addDays = (value, days) => {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return null
-  date.setUTCDate(date.getUTCDate() + days)
-  return date
-}
-
-const getRangeDates = () => {
-  const start = getStartOfIsoWeek(new Date())
-  if (!start) return []
-  return Array.from({ length: 21 }, (_, index) => addDays(start, index)).filter(
-    Boolean,
-  )
-}
+const DUE_RANGE_DAYS = 21
+const DUE_RANGE_LIMIT = 100
 
 const normalizeEventDate = item => {
   const raw = item?.dueDate || item?.date
@@ -62,17 +50,21 @@ function ProjectDashboardPage({ useCache = false }) {
       setIsLoading(true)
       setErrorMessage('')
       try {
-        const dates = getRangeDates()
-        const items = []
-
-        for (const date of dates) {
-          const ymd = dateToYmd(date)
-          if (!ymd) continue
-          const response = await getDueEventsByDate(ymd)
-          if (Array.isArray(response?.items)) {
-            items.push(...response.items)
-          }
-        }
+        const startDate = dateToYmd(getStartOfIsoWeek(new Date()))
+        const response = await getDueEventsByRange({
+          startDate,
+          days: DUE_RANGE_DAYS,
+          limit: DUE_RANGE_LIMIT,
+        })
+        const items = (Array.isArray(response?.dates) ? response.dates : []).flatMap(
+          dayEntry => {
+            if (!Array.isArray(dayEntry?.items)) return []
+            return dayEntry.items.map(item => {
+              if (item?.dueDate || item?.date || !dayEntry?.date) return item
+              return { ...item, dueDate: dayEntry.date }
+            })
+          },
+        )
 
         if (!isMounted) return
 

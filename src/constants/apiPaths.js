@@ -9,7 +9,7 @@ export const API_PATHS = {
   projects: `${API_V1_PREFIX}/projects`,
   projectById: projectId =>
     `${API_V1_PREFIX}/projects/${encodeURIComponent(projectId)}`,
-  dueByDate: date => `${API_V1_PREFIX}/due/${encodeURIComponent(date)}`,
+  dueByRange: `${API_V1_PREFIX}/due/range`,
   items: `${API_V1_PREFIX}/items`,
   itemsByStatus: status =>
     `${API_V1_PREFIX}/items/status/${encodeURIComponent(status)}`,

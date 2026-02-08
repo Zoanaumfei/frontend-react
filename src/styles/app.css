@@ -1301,41 +1301,54 @@
 }
 
 .balloon-float {
-  --balloon-gif: none;
+  --balloon-color-a: #ff7f66;
+  --balloon-color-b: #ff4fd8;
   position: absolute;
   bottom: -140px;
   width: 90px;
   height: 110px;
-  display: grid;
-  place-items: center;
-  font-size: 2.6rem;
-  background-image: var(--balloon-gif);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.72) 0 18%, transparent 22%),
+    linear-gradient(160deg, var(--balloon-color-a), var(--balloon-color-b));
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.16);
   opacity: 0.85;
   animation: balloon-rise 22s linear infinite;
+}
+
+.balloon-float::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 52px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.28);
 }
 
 .balloon-float--one {
   left: 6%;
   animation-duration: 22s;
   animation-delay: 0s;
-  --balloon-gif: url("/gifs/balloon-1.gif");
+  --balloon-color-a: #ffb347;
+  --balloon-color-b: #ff5f6d;
 }
 
 .balloon-float--two {
   left: 48%;
   animation-duration: 26s;
   animation-delay: 6s;
-  --balloon-gif: url("/gifs/balloon-2.gif");
+  --balloon-color-a: #72f2e8;
+  --balloon-color-b: #3d7dff;
 }
 
 .balloon-float--three {
   left: 82%;
   animation-duration: 24s;
   animation-delay: 3s;
-  --balloon-gif: url("/gifs/balloon-3.gif");
+  --balloon-color-a: #ffe066;
+  --balloon-color-b: #ff8a00;
 }
 
 .birthday-card {
