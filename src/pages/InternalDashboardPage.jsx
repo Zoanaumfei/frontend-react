@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getAllItems, getItemsByStatus } from '../services/itemService'
+import { ITEM_STATUS } from '../constants'
+
+const normalizeStatus = value => String(value || '').trim().toUpperCase()
 
 function InternalDashboardPage() {
   const [pendingExternal, setPendingExternal] = useState([])
@@ -8,6 +11,8 @@ function InternalDashboardPage() {
   const [totalRequests, setTotalRequests] = useState(0)
   const [supplierFilter, setSupplierFilter] = useState('')
   const [internalSupplierFilter, setInternalSupplierFilter] = useState('')
+  const [completedCount, setCompletedCount] = useState(0)
+  const [overdueCount, setOverdueCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -18,11 +23,21 @@ function InternalDashboardPage() {
       try {
         const [allItems, pendingItems, internalItems] = await Promise.all([
           getAllItems(),
-          getItemsByStatus('SAVED'),
-          getItemsByStatus('SENT'),
+          getItemsByStatus(ITEM_STATUS.SAVED),
+          getItemsByStatus(ITEM_STATUS.SENT),
         ])
         if (isActive) {
-          setTotalRequests(Array.isArray(allItems) ? allItems.length : 0)
+          const normalizedAllItems = Array.isArray(allItems) ? allItems : []
+          const statusCounts = normalizedAllItems.reduce((acc, item) => {
+            const key = normalizeStatus(item?.status)
+            if (!key) return acc
+            acc[key] = (acc[key] || 0) + 1
+            return acc
+          }, {})
+
+          setTotalRequests(normalizedAllItems.length)
+          setCompletedCount(statusCounts[ITEM_STATUS.COMPLETED] || 0)
+          setOverdueCount(statusCounts[ITEM_STATUS.OVERDUE] || 0)
           setPendingExternal(Array.isArray(pendingItems) ? pendingItems : [])
           setPendingInternal(Array.isArray(internalItems) ? internalItems : [])
         }
@@ -51,8 +66,8 @@ function InternalDashboardPage() {
   const summaryStats = [
     { label: 'Total requests', value: totalRequests },
     { label: 'In review', value: pendingInternal.length },
-    { label: 'Completed', value: 9 },
-    { label: 'Overdue', value: 5 },
+    { label: 'Completed', value: completedCount },
+    { label: 'Overdue', value: overdueCount },
   ]
 
   const filteredPendencies = pendingExternal.filter(item => {
@@ -252,9 +267,9 @@ function InternalDashboardPage() {
         <aside className="dashboard__side card">
           <h3>Status overview</h3>
           <ul className="dashboard__bullets">
-            <li>28 requests completed this quarter.</li>
-            <li>9 timing plans are under internal review.</li>
-            <li>5 requests are currently overdue.</li>
+            <li>{completedCount} requests completed.</li>
+            <li>{pendingInternal.length} timing plans are under internal review.</li>
+            <li>{overdueCount} requests are currently overdue.</li>
           </ul>
           <p className="dashboard__note">
             Use the requests list to follow up with suppliers and clear

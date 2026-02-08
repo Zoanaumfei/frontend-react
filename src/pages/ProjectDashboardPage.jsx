@@ -119,7 +119,7 @@ function ProjectDashboardPage({ useCache = false }) {
             setProjectDashboardCache({ eventsByWeek: groupedList })
           }
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
           setErrorMessage('Unable to load events right now.')
           setEventsByWeek([])

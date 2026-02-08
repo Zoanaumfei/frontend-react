@@ -1,0 +1,6 @@
+export const ITEM_STATUS = {
+  SAVED: 'SAVED',
+  SENT: 'SENT',
+  COMPLETED: 'COMPLETED',
+  OVERDUE: 'OVERDUE',
+}

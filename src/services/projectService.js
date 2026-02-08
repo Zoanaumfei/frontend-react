@@ -1,4 +1,5 @@
 import api from '../api/axios'
+import { API_PATHS } from '../constants'
 
 const createIdempotencyKey = () => {
   if (globalThis.crypto?.randomUUID) {
@@ -23,7 +24,30 @@ const createIdempotencyKey = () => {
 }
 
 export const createProject = async (payload, idempotencyKey = createIdempotencyKey()) => {
-  const response = await api.post('/api/v1/projects', payload, {
+  const response = await api.post(API_PATHS.projects, payload, {
+    headers: {
+      'Idempotency-Key': idempotencyKey,
+    },
+  })
+  return response.data
+}
+
+export const getProject = async projectId => {
+  const response = await api.get(API_PATHS.projectById(projectId))
+  return response.data
+}
+
+export const getProjects = async () => {
+  const response = await api.get(API_PATHS.projects)
+  return response.data
+}
+
+export const updateProject = async (
+  projectId,
+  payload,
+  idempotencyKey = createIdempotencyKey(),
+) => {
+  const response = await api.put(API_PATHS.projectById(projectId), payload, {
     headers: {
       'Idempotency-Key': idempotencyKey,
     },
@@ -33,6 +57,6 @@ export const createProject = async (payload, idempotencyKey = createIdempotencyK
 
 export const getDueEventsByDate = async date => {
   if (!date) return { items: [] }
-  const response = await api.get(`/api/v1/due/${date}`)
+  const response = await api.get(API_PATHS.dueByDate(date))
   return response.data
 }

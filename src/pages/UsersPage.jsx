@@ -16,7 +16,7 @@ function UsersPage() {
           setUsers(Array.isArray(data) ? data : [])
           setError('')
         }
-      } catch (err) {
+      } catch {
         if (active) {
           setError('Unable to load users.')
         }

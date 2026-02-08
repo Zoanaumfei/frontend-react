@@ -1,4 +1,5 @@
 import api from '../api/axios'
+import { API_PATHS } from '../constants'
 
 const storeTokens = (tokens, remember) => {
   const storage = remember ? localStorage : sessionStorage
@@ -9,7 +10,7 @@ const storeTokens = (tokens, remember) => {
 }
 
 export const login = async ({ email, password, remember }) => {
-  const response = await api.post('/auth/login', { email, password })
+  const response = await api.post(API_PATHS.auth.login, { email, password })
   const data = response.data || {}
 
   storeTokens(

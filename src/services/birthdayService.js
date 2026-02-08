@@ -1,17 +1,18 @@
 import api from '../api/axios'
+import { API_PATHS } from '../constants'
 
 export const createBirthday = async payload => {
-  const response = await api.post('/api/v1/birthdays', payload)
+  const response = await api.post(API_PATHS.birthdays, payload)
   return response.data
 }
 
 export const updateBirthday = async payload => {
-  const response = await api.put('/api/v1/birthdays', payload)
+  const response = await api.put(API_PATHS.birthdays, payload)
   return response.data
 }
 
 export const getBirthdays = async (params = {}) => {
-  const response = await api.get('/api/v1/birthdays', { params })
+  const response = await api.get(API_PATHS.birthdays, { params })
   return response.data
 }
 
@@ -50,8 +51,6 @@ export const clearBirthdaysCache = () => {
 }
 
 export const deleteBirthday = async (month, name) => {
-  const response = await api.delete(
-    `/api/v1/birthdays/${encodeURIComponent(month)}/${encodeURIComponent(name)}`,
-  )
+  const response = await api.delete(API_PATHS.birthdayByMonthAndName(month, name))
   return response.data
 }

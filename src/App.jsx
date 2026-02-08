@@ -11,6 +11,7 @@ import MonthlyBirthdaysManagementPage from './pages/MonthlyBirthdaysManagementPa
 import ProjectManagementPage from './pages/ProjectManagementPage'
 import ProjectDashboardPage from './pages/ProjectDashboardPage'
 import NewProjectCreationPage from './pages/NewProjectCreationPage'
+import ManageProjectsPage from './pages/ManageProjectsPage'
 import InternalNewRequestPage from './pages/InternalNewRequestPage'
 import LoginSuccessPage from './pages/LoginSuccessPage'
 import ExternalDashboardPage from './pages/ExternalDashboardPage'
@@ -98,6 +99,14 @@ function App() {
               </AuthGuard>
             }
           />
+          <Route
+            path="/manage-projects"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ManageProjectsPage />
+              </AuthGuard>
+            }
+          />
           <Route path="/support" element={<SupportPage />} />
           <Route
             path="/welcome"
@@ -142,7 +151,7 @@ function App() {
           <Route
             path="/requests/:supplierID/:partNumberVersion"
             element={
-              <AuthGuard>
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
                 <RequestDetailPage />
               </AuthGuard>
             }

@@ -280,6 +280,18 @@
   transition: border 200ms ease, box-shadow 200ms ease;
 }
 
+.login-form__field textarea {
+  border: 1px solid rgba(22, 33, 43, 0.15);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  background: var(--surface-alt);
+  transition: border 200ms ease, box-shadow 200ms ease;
+  resize: vertical;
+  min-height: 180px;
+}
+
 .login-form__field--with-toggle {
   position: relative;
 }
@@ -322,6 +334,12 @@
 }
 
 .login-form__field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
+}
+
+.login-form__field textarea:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
@@ -2057,6 +2075,78 @@
   font-weight: 600;
   color: var(--ink);
 }
+
+.manage-projects {
+  display: grid;
+  gap: 24px;
+}
+
+.manage-projects__search {
+  margin-top: 4px;
+}
+
+.manage-projects__results {
+  display: grid;
+  gap: 16px;
+}
+
+.manage-projects__list {
+  display: grid;
+  gap: 16px;
+}
+
+.manage-projects__panel {
+  display: grid;
+  gap: 20px;
+}
+
+.manage-projects__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid rgba(22, 33, 43, 0.08);
+  box-shadow: 0 16px 30px rgba(22, 33, 43, 0.08);
+}
+
+.manage-projects__stat {
+  display: grid;
+  gap: 6px;
+}
+
+.manage-projects__label {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+
+.manage-projects__value {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.manage-projects__status {
+  margin: 0;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.manage-projects__editor {
+  gap: 12px;
+}
+
+.manage-projects__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
 @keyframes float-in {
   from {
     opacity: 0;

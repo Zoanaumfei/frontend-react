@@ -11,7 +11,7 @@ import { getDownloadUrl } from '../utils/fileTransfer'
 const getMonthLabel = value => {
   const month = Number(value)
   if (!month || month < 1 || month > 12) return '--'
-  return new Date(2026, month - 1, 1)
+  return new Date(new Date().getFullYear(), month - 1, 1)
     .toLocaleDateString('pt-BR', { month: 'short' })
     .replace('.', '')
 }
@@ -85,8 +85,7 @@ function MonthlyBirthdaysPage({
           ? await refreshBirthdaysCache({})
           : await getBirthdays()
         applyBirthdays(data)
-      } catch (error) {
-        console.error('Failed to load birthdays:', error)
+      } catch {
         if (!isMounted) return
         setErrorMessage('Nao foi possivel carregar os aniversariantes.')
       } finally {
@@ -129,7 +128,7 @@ function MonthlyBirthdaysPage({
     return () => {
       isMounted = false
     }
-  }, [useCache, cacheTtlMs])
+  }, [useCache, cacheTtlMs, autoRefresh])
 
   useEffect(() => {
     let isMounted = true
@@ -190,8 +189,8 @@ function MonthlyBirthdaysPage({
             if (url) setCachedPhotoUrl(key, url)
           })
         }
-      } catch (error) {
-        console.error('Failed to load photo URLs:', error)
+      } catch {
+        // Ignore photo URL fetch failures so the page can fall back to initials.
       }
     }
 
@@ -200,7 +199,7 @@ function MonthlyBirthdaysPage({
     return () => {
       isMounted = false
     }
-  }, [birthdays, photoUrls])
+  }, [birthdays, photoUrls, useCache])
 
   return (
     <section

@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../auth/auth.service'
 import { GROUPS } from '../auth/auth.constants.js'
 import { hasGroup } from '../auth/auth.groups.js'
+import { clearTokens } from '../auth/auth.tokens.js'
+import { LOGIN_EYEBROW } from '../constants'
 
 function HomePage() {
   const navigate = useNavigate()
@@ -43,6 +45,7 @@ function HomePage() {
         internalForm.remember,
       )
       if (!hasGroup(GROUPS.INTERNAL, GROUPS.ADMIN)) {
+        clearTokens()
         setInternalError('Esta conta não está autorizada para acesso interno.')
         return
       }
@@ -72,6 +75,7 @@ function HomePage() {
         externalForm.remember,
       )
       if (!hasGroup(GROUPS.EXTERNAL, GROUPS.ADMIN)) {
+        clearTokens()
         setExternalError('Esta conta não está autorizada para acesso externo.')
         return
       }
@@ -91,7 +95,7 @@ function HomePage() {
     <section className="login-page">
       <div className="login-page__main">
         <div className="login-hero">
-          <p className="login-hero__eyebrow">PROVA DE CONCEITO - MVP 1.0</p>
+          <p className="login-hero__eyebrow">{LOGIN_EYEBROW}</p>
           <h1>Portal de fornecedores.</h1>
           <p className="login-hero__lead">
             Entre para gerenciar solicitações, acompanhar o status e colaborar

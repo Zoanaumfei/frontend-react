@@ -1,3 +1,5 @@
+import { decodeJwtPayload } from './auth.jwt.js'
+
 const STORAGE_KEYS = {
   idToken: 'idToken',
   accessToken: 'accessToken',
@@ -31,11 +33,9 @@ export function isAuthenticated() {
   const token = getIdToken()
   if (!token) return false
 
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    const now = Math.floor(Date.now() / 1000)
-    return payload.exp && payload.exp > now
-  } catch {
-    return false
-  }
+  const payload = decodeJwtPayload(token)
+  if (!payload) return false
+
+  const now = Math.floor(Date.now() / 1000)
+  return Boolean(payload.exp && payload.exp > now)
 }

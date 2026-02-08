@@ -2,12 +2,6 @@ import axios from 'axios'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
-if (!baseURL) {
-  console.error(
-    'VITE_API_BASE_URL is missing. Set it in the .env file to your backend URL.',
-  )
-}
-
 const api = axios.create({
   baseURL,
 })

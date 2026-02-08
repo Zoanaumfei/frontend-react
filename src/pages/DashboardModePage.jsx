@@ -71,7 +71,6 @@ function DashboardModePage() {
     let animationId
     let lastTime = 0
     let advanceTimeoutId
-    let startTimeoutId
     let holdTimeoutId
     const availableScrollTimeMs = Math.max(
       0,
@@ -138,7 +137,7 @@ function DashboardModePage() {
       animationId = requestAnimationFrame(scroll)
     }
 
-    startTimeoutId = setTimeout(() => {
+    const startTimeoutId = setTimeout(() => {
       startScrollOrWait()
     }, SCROLL_START_DELAY_MS)
 
@@ -202,8 +201,8 @@ function DashboardModePage() {
 
     try {
       await target.requestFullscreen()
-    } catch (error) {
-      console.error('Fullscreen request failed:', error)
+    } catch {
+      // Ignore fullscreen API failures and continue in embedded mode.
     } finally {
       setShowOverlay(false)
       setAutoScrollActive(true)

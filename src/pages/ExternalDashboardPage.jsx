@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getItemsByStatus } from '../services/itemService'
+import { ITEM_STATUS } from '../constants'
 
 function ExternalDashboardPage() {
   const [pendingRequests, setPendingRequests] = useState([])
@@ -12,11 +13,11 @@ function ExternalDashboardPage() {
 
     const fetchPending = async () => {
       try {
-        const items = await getItemsByStatus('SAVED')
+        const items = await getItemsByStatus(ITEM_STATUS.SAVED)
         if (isActive) {
           const normalized = Array.isArray(items) ? items : []
           setPendingRequests(
-            normalized.filter(item => item?.status === 'SAVED'),
+            normalized.filter(item => item?.status === ITEM_STATUS.SAVED),
           )
         }
       } catch (err) {

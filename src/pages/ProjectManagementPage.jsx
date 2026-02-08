@@ -15,6 +15,9 @@ function ProjectManagementPage() {
         <Link className="request-card__action" to="/project-dashboard">
           Open project dashboard
         </Link>
+        <Link className="request-card__action" to="/manage-projects">
+          Manage projects
+        </Link>
       </div>
     </section>
   )

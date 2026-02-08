@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getItemsByStatus } from '../services/itemService'
+import { ITEM_STATUS } from '../constants'
 import { dateToWeekYear, weekYearToDate, ymdToDate } from '../utils/weekDate'
 
 const EXTRA_FIELD_KEYS = [
@@ -63,7 +64,7 @@ function ExternalRequestPage() {
 
     const fetchRequest = async () => {
       try {
-        const items = await getItemsByStatus('SAVED')
+        const items = await getItemsByStatus(ITEM_STATUS.SAVED)
         const normalized = Array.isArray(items) ? items : []
         const matched = normalized.find(item => {
           if (!item) return false
@@ -110,7 +111,7 @@ function ExternalRequestPage() {
     }
     try {
       return JSON.stringify(value)
-    } catch (err) {
+    } catch {
       return 'N/A'
     }
   }

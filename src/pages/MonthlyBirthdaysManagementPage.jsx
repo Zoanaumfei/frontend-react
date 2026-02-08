@@ -7,11 +7,11 @@ import { uploadFileWithPresign } from '../utils/fileTransfer'
 function MonthlyBirthdaysManagementPage() {
   const maxPhotoSizeBytes = 10 * 1024 * 1024
   const [formData, setFormData] = useState({
-    month: 5,
-    day: 18,
-    name: 'Maria Silva',
-    corporateMonth: 6,
-    corporateYear: 2021,
+    month: '',
+    day: '',
+    name: '',
+    corporateMonth: '',
+    corporateYear: '',
   })
   const [photoFile, setPhotoFile] = useState(null)
   const [photoError, setPhotoError] = useState('')
@@ -50,8 +50,7 @@ function MonthlyBirthdaysManagementPage() {
     try {
       const data = await getBirthdays(params)
       setBirthdays(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Failed to load birthdays:', error)
+    } catch {
       setListError('Failed to load birthdays. Please try again.')
     } finally {
       setIsLoading(false)
@@ -92,8 +91,7 @@ function MonthlyBirthdaysManagementPage() {
         setPhotoFile(null)
         setPhotoError('')
         fetchBirthdays(lastQuery)
-    } catch (error) {
-      console.error('Failed to add birthday:', error)
+    } catch {
       setErrorMessage('Failed to add birthday. Please try again.')
     } finally {
       setIsSaving(false)
@@ -123,8 +121,7 @@ function MonthlyBirthdaysManagementPage() {
           item => !(item.month === record.month && item.name === record.name),
         ),
       )
-    } catch (error) {
-      console.error('Failed to delete birthday:', error)
+    } catch {
       setListError('Failed to delete birthday. Please try again.')
     }
   }

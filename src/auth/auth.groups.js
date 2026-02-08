@@ -1,16 +1,14 @@
 import { GROUPS } from './auth.constants.js'
+import { decodeJwtPayload } from './auth.jwt.js'
 import { getIdToken } from './auth.tokens.js'
 
 export function getUserGroups() {
   const token = getIdToken()
   if (!token) return []
 
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload['cognito:groups'] || []
-  } catch {
-    return []
-  }
+  const payload = decodeJwtPayload(token)
+  const groups = payload?.['cognito:groups']
+  return Array.isArray(groups) ? groups : []
 }
 
 export function resolveUserGroup() {
