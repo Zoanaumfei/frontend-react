@@ -19,6 +19,7 @@ import ExternalRequestPage from './pages/ExternalRequestPage'
 import UsersPage from './pages/UsersPage'
 import OurMissionPage from './pages/OurMissionPage'
 import SupportPage from './pages/SupportPage'
+import NoAccessPage from './pages/NoAccessPage'
 import { GROUPS } from './auth/auth.constants.js'
 import RequestDetailPage from './pages/RequestDetailPage'
 import FirstAccessPage from './pages/FirstAccessPage'
@@ -108,6 +109,7 @@ function App() {
             }
           />
           <Route path="/support" element={<SupportPage />} />
+          <Route path="/no-access" element={<NoAccessPage />} />
           <Route
             path="/welcome"
             element={

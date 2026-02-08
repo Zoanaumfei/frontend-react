@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getProject, getProjects, updateProject } from '../services/projectService'
 import { dateToWeekYear, dateToYmd, weekYearToDate, ymdToDate } from '../utils/weekDate'
+import { reportClientBug } from '../utils/clientBug'
 import {
   ALS_FIELD_LABELS,
   ALS_LAYOUT_ROWS,
@@ -169,7 +170,7 @@ function ManageProjectsPage() {
 
   const handleUpdate = async event => {
     event.preventDefault()
-    if (!project?.projectId) return
+    if (!project?.projectId || isUpdating) return
 
     setIsUpdating(true)
     setUpdateError('')
@@ -221,6 +222,24 @@ function ManageProjectsPage() {
       setUpdateSuccess('Project updated successfully.')
       setIsEditing(false)
     } catch (err) {
+      const status = err?.response?.status
+      const backendMessage = err?.response?.data?.message || err?.message || ''
+      const isIdempotencyError =
+        status === 400 && /idempotency[- ]key/i.test(backendMessage)
+
+      if (isIdempotencyError) {
+        reportClientBug('INVALID_IDEMPOTENCY_KEY', {
+          screen: 'ManageProjectsPage',
+          projectId: project?.projectId,
+          status,
+          backendMessage,
+        })
+        setUpdateError(
+          'Unexpected request validation error. Please refresh and try again.',
+        )
+        return
+      }
+
       const message =
         err?.response?.data?.message ||
         err?.message ||

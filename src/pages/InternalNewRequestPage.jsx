@@ -66,6 +66,15 @@ function InternalNewRequestPage() {
         sop: '',
       })
     } catch (err) {
+      const status = err?.response?.status
+      if (status === 409) {
+        setError(
+          err?.response?.data?.message ||
+            'A request with the same supplier and part/version already exists.',
+        )
+        return
+      }
+
       const message =
         err?.response?.data?.message ||
         err?.message ||

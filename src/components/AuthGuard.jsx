@@ -8,7 +8,7 @@ function AuthGuard({ allowedGroups, children }) {
   }
 
   if (allowedGroups?.length && !hasGroup(...allowedGroups)) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/no-access" replace />
   }
 
   return children

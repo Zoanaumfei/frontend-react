@@ -59,6 +59,8 @@ function MonthlyBirthdaysManagementPage() {
 
   const handleSubmit = async event => {
     event.preventDefault()
+    if (isSaving) return
+
     setIsSaving(true)
     setErrorMessage('')
     setSuccessMessage('')
@@ -91,8 +93,12 @@ function MonthlyBirthdaysManagementPage() {
         setPhotoFile(null)
         setPhotoError('')
         fetchBirthdays(lastQuery)
-    } catch {
-      setErrorMessage('Failed to add birthday. Please try again.')
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to add birthday. Please try again.'
+      setErrorMessage(message)
     } finally {
       setIsSaving(false)
     }

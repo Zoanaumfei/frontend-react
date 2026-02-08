@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createProject } from '../services/projectService'
 import { dateToYmd, weekYearToDate } from '../utils/weekDate'
+import { reportClientBug } from '../utils/clientBug'
 import {
   ALS_FIELD_LABELS,
   ALS_LAYOUT_ROWS,
@@ -92,6 +93,24 @@ function NewProjectCreationPage() {
       setFormData({ projectID: '', projectName: '' })
       setAlsFields([])
     } catch (err) {
+      const status = err?.response?.status
+      const backendMessage = err?.response?.data?.message || err?.message || ''
+      const isIdempotencyError =
+        status === 400 && /idempotency[- ]key/i.test(backendMessage)
+
+      if (isIdempotencyError) {
+        reportClientBug('INVALID_IDEMPOTENCY_KEY', {
+          screen: 'NewProjectCreationPage',
+          projectId: formData.projectID,
+          status,
+          backendMessage,
+        })
+        setError(
+          'Unexpected request validation error. Please refresh and try again.',
+        )
+        return
+      }
+
       const message =
         err?.response?.data?.message ||
         err?.message ||

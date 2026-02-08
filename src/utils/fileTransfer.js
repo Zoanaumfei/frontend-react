@@ -1,5 +1,12 @@
-import { FILE_UPLOAD_REFERENCES } from '../constants'
 import { presignDownload, presignUpload } from '../services/fileService'
+
+const FILE_SERVICE_UNAVAILABLE_MESSAGE =
+  'File service is temporarily unavailable. Please try again later.'
+
+const isServiceUnavailable = error => error?.response?.status === 503
+
+const getErrorMessage = (error, fallbackMessage) =>
+  error?.response?.data?.message || error?.message || fallbackMessage
 
 export const buildUploadPayload = (file, reference = {}) => ({
   originalFileName: file.name,
@@ -14,22 +21,38 @@ export const uploadFileWithPresign = async (
   { errorMessage = 'Failed to upload file.' } = {},
 ) => {
   if (!file) return { key: null }
-  const uploadPayload = buildUploadPayload(file, reference)
-  const { uploadUrl, key } = await presignUpload(uploadPayload)
-  const uploadResponse = await fetch(uploadUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': uploadPayload.contentType,
-    },
-    body: file,
-  })
-  if (!uploadResponse.ok) {
-    throw new Error(errorMessage)
+  try {
+    const uploadPayload = buildUploadPayload(file, reference)
+    const { uploadUrl, key } = await presignUpload(uploadPayload)
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': uploadPayload.contentType,
+      },
+      body: file,
+    })
+
+    if (!uploadResponse.ok) {
+      throw new Error(errorMessage)
+    }
+
+    return { key, uploadUrl }
+  } catch (error) {
+    if (isServiceUnavailable(error)) {
+      throw new Error(FILE_SERVICE_UNAVAILABLE_MESSAGE)
+    }
+    throw new Error(getErrorMessage(error, errorMessage))
   }
-  return { key, uploadUrl }
 }
 
 export const getDownloadUrl = async key => {
-  const { downloadUrl } = await presignDownload(key)
-  return downloadUrl
+  try {
+    const { downloadUrl } = await presignDownload(key)
+    return downloadUrl
+  } catch (error) {
+    if (isServiceUnavailable(error)) {
+      return null
+    }
+    throw new Error(getErrorMessage(error, 'Failed to load file URL.'))
+  }
 }

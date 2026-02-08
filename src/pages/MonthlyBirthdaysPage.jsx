@@ -34,6 +34,7 @@ function MonthlyBirthdaysPage({
   const [photoUrls, setPhotoUrls] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [fileServiceMessage, setFileServiceMessage] = useState('')
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
   const displayBirthdays = birthdays.flatMap(record => {
@@ -177,6 +178,12 @@ function MonthlyBirthdaysPage({
           }),
         )
         if (!isMounted) return
+        const hasFileServiceUnavailable = entries.some(([, url]) => !url)
+        setFileServiceMessage(
+          hasFileServiceUnavailable
+            ? 'File service is temporarily unavailable. Photos may not be displayed.'
+            : '',
+        )
         setPhotoUrls(prev => {
           const next = { ...prev }
           entries.forEach(([key, url]) => {
@@ -190,7 +197,9 @@ function MonthlyBirthdaysPage({
           })
         }
       } catch {
-        // Ignore photo URL fetch failures so the page can fall back to initials.
+        setFileServiceMessage(
+          'File service is temporarily unavailable. Photos may not be displayed.',
+        )
       }
     }
 
@@ -237,6 +246,9 @@ function MonthlyBirthdaysPage({
               <p className="monthly-birthdays__meta">Carregando aniversariantes...</p>
             )}
             {errorMessage && <p className="login-form__error">{errorMessage}</p>}
+            {fileServiceMessage && (
+              <p className="monthly-birthdays__meta">{fileServiceMessage}</p>
+            )}
             {!isLoading && !errorMessage && displayBirthdays.length === 0 && (
               <p className="monthly-birthdays__meta">
                 Nenhum aniversariante encontrado para este mes.
