@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { createProject } from '../services/projectService'
+import {
+  createProject,
+  createProjectIdempotencyKey,
+} from '../services/projectService'
 import { dateToYmd, weekYearToDate } from '../utils/weekDate'
 import { reportClientBug } from '../utils/clientBug'
 import {
@@ -14,6 +17,8 @@ import {
   createAlsEntry,
 } from '../utils/projectGrid'
 
+const IDEMPOTENCY_REUSE_WINDOW_MS = 120000
+
 function NewProjectCreationPage() {
   const [formData, setFormData] = useState({
     projectID: '',
@@ -24,9 +29,15 @@ function NewProjectCreationPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const createAttemptRef = useRef({
+    key: '',
+    signature: '',
+    createdAt: 0,
+  })
 
   const handleChange = event => {
     const { name, value } = event.target
+    createAttemptRef.current = { key: '', signature: '', createdAt: 0 }
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
@@ -80,18 +91,38 @@ function NewProjectCreationPage() {
         return normalized
       })
 
-      const result = await createProject({
+      const payload = {
         projectId,
         projectName,
         grid: {
           alsDescriptions: buildAlsDescriptions(alsFields),
           dates: buildGridDates(normalizedAls),
         },
-      })
+      }
+
+      const now = Date.now()
+      const createSignature = JSON.stringify(payload)
+      const canReuseKey =
+        createAttemptRef.current.key &&
+        createAttemptRef.current.signature === createSignature &&
+        now - createAttemptRef.current.createdAt < IDEMPOTENCY_REUSE_WINDOW_MS
+
+      const idempotencyKey = canReuseKey
+        ? createAttemptRef.current.key
+        : createProjectIdempotencyKey()
+
+      createAttemptRef.current = {
+        key: idempotencyKey,
+        signature: createSignature,
+        createdAt: now,
+      }
+
+      const result = await createProject(payload, idempotencyKey)
 
       setSuccessMessage(result?.message || 'Project created successfully.')
       setFormData({ projectID: '', projectName: '' })
       setAlsFields([])
+      createAttemptRef.current = { key: '', signature: '', createdAt: 0 }
     } catch (err) {
       const status = err?.response?.status
       const backendMessage = err?.response?.data?.message || err?.message || ''
@@ -124,11 +155,13 @@ function NewProjectCreationPage() {
   const handleAddAlsField = () => {
     setAlsFields(prev => {
       if (prev.length >= MAX_ALS_FIELDS) return prev
+      createAttemptRef.current = { key: '', signature: '', createdAt: 0 }
       return [...prev, createAlsEntry(prev.length + 1)]
     })
   }
 
   const handleAlsFieldChange = (entryIndex, fieldKey, value) => {
+    createAttemptRef.current = { key: '', signature: '', createdAt: 0 }
     setAlsFields(prev =>
       prev.map((entry, idx) => {
         if (idx !== entryIndex) return entry

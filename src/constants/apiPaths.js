@@ -18,6 +18,9 @@ export const API_PATHS = {
   birthdays: `${API_V1_PREFIX}/birthdays`,
   birthdayByMonthAndName: (month, name) =>
     `${API_V1_PREFIX}/birthdays/${encodeURIComponent(month)}/${encodeURIComponent(name)}`,
+  initiatives: `${API_V1_PREFIX}/initiatives`,
+  initiativeById: initiativeId =>
+    `${API_V1_PREFIX}/initiatives/${encodeURIComponent(initiativeId)}`,
   files: {
     presignUpload: `${API_V1_PREFIX}/files/presign-upload`,
     presignDownload: `${API_V1_PREFIX}/files/presign-download`,

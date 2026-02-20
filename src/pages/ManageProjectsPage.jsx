@@ -1,6 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getProject, getProjects, updateProject } from '../services/projectService'
+import {
+  createProjectIdempotencyKey,
+  getProject,
+  getProjects,
+  updateProject,
+} from '../services/projectService'
 import { dateToWeekYear, dateToYmd, weekYearToDate, ymdToDate } from '../utils/weekDate'
 import { reportClientBug } from '../utils/clientBug'
 import {
@@ -17,6 +22,8 @@ import {
   buildGridDates,
   createAlsEntry,
 } from '../utils/projectGrid'
+
+const IDEMPOTENCY_REUSE_WINDOW_MS = 120000
 
 const toWeekYear = value => {
   if (!value) return ''
@@ -100,6 +107,11 @@ function ManageProjectsPage() {
   const [error, setError] = useState('')
   const [updateError, setUpdateError] = useState('')
   const [updateSuccess, setUpdateSuccess] = useState('')
+  const updateAttemptRef = useRef({
+    key: '',
+    signature: '',
+    createdAt: 0,
+  })
 
   const fetchProjects = async () => {
     setIsListing(true)
@@ -124,6 +136,7 @@ function ManageProjectsPage() {
 
   const handleFilterChange = event => {
     const { name, value } = event.target
+    updateAttemptRef.current = { key: '', signature: '', createdAt: 0 }
     setFilters(prev => ({ ...prev, [name]: value }))
   }
 
@@ -140,6 +153,7 @@ function ManageProjectsPage() {
     setProject(null)
     setAlsFields([])
     setIsEditing(false)
+    updateAttemptRef.current = { key: '', signature: '', createdAt: 0 }
 
     try {
       const data = await getProject(projectId)
@@ -211,16 +225,43 @@ function ManageProjectsPage() {
         return normalized
       })
 
-      const result = await updateProject(project.projectId, {
+      const updatePayload = {
         grid: {
           alsDescriptions: buildAlsDescriptions(alsFields),
           dates: buildGridDates(normalizedAls),
         },
+      }
+
+      const now = Date.now()
+      const updateSignature = JSON.stringify({
+        projectId: project.projectId,
+        payload: updatePayload,
       })
+      const canReuseKey =
+        updateAttemptRef.current.key &&
+        updateAttemptRef.current.signature === updateSignature &&
+        now - updateAttemptRef.current.createdAt < IDEMPOTENCY_REUSE_WINDOW_MS
+
+      const idempotencyKey = canReuseKey
+        ? updateAttemptRef.current.key
+        : createProjectIdempotencyKey()
+
+      updateAttemptRef.current = {
+        key: idempotencyKey,
+        signature: updateSignature,
+        createdAt: now,
+      }
+
+      const result = await updateProject(
+        project.projectId,
+        updatePayload,
+        idempotencyKey,
+      )
       setProject(result)
       setAlsFields(buildAlsEntriesFromGrid(result?.grid))
       setUpdateSuccess('Project updated successfully.')
       setIsEditing(false)
+      updateAttemptRef.current = { key: '', signature: '', createdAt: 0 }
     } catch (err) {
       const status = err?.response?.status
       const backendMessage = err?.response?.data?.message || err?.message || ''
@@ -253,6 +294,7 @@ function ManageProjectsPage() {
   const handleAddAlsField = () => {
     setAlsFields(prev => {
       if (prev.length >= MAX_ALS_FIELDS) return prev
+      updateAttemptRef.current = { key: '', signature: '', createdAt: 0 }
       const existing = new Set(
         prev.map(getAlsNumber).filter(value => Number.isFinite(value)),
       )
@@ -273,9 +315,11 @@ function ManageProjectsPage() {
     setIsEditing(true)
     setUpdateError('')
     setUpdateSuccess('')
+    updateAttemptRef.current = { key: '', signature: '', createdAt: 0 }
   }
 
   const handleAlsFieldChange = (entryIndex, fieldKey, value) => {
+    updateAttemptRef.current = { key: '', signature: '', createdAt: 0 }
     setAlsFields(prev =>
       prev.map((entry, idx) => {
         if (idx !== entryIndex) return entry

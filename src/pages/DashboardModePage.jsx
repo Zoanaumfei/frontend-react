@@ -4,6 +4,7 @@ import MonthlyBirthdaysPage from './MonthlyBirthdaysPage'
 import ProjectDashboardPage from './ProjectDashboardPage'
 import { clearBirthdaysCache } from '../services/birthdayService'
 import { clearBirthdayPhotoCache } from '../services/birthdayPhotoCache'
+import { clearInitiativesCache } from '../services/initiativeService'
 import { clearProjectDashboardCache } from '../services/projectDashboardCache'
 
 const MIN_SCROLL_VIEWPORT = 320
@@ -15,6 +16,7 @@ const SCROLL_END_DELAY_MS = 1000
 const MIN_SCROLL_SPEED_PX_PER_SECOND = 10
 const MAX_SCROLL_SPEED_PX_PER_SECOND = 120
 const BIRTHDAYS_CACHE_TTL_MS = 60 * 60 * 1000
+const INITIATIVES_CACHE_TTL_MS = 60 * 60 * 1000
 const VIEWS = [
   {
     id: 'birthdays',
@@ -32,6 +34,7 @@ const VIEWS = [
     id: 'initiatives',
     label: 'Initiatives Hub',
     Component: InitiativesHubPage,
+    props: { useCache: true, cacheTtlMs: INITIATIVES_CACHE_TTL_MS, autoRefresh: false },
   },
 ]
 
@@ -50,6 +53,7 @@ function DashboardModePage() {
     () => () => {
       clearBirthdaysCache()
       clearBirthdayPhotoCache()
+      clearInitiativesCache()
       clearProjectDashboardCache()
     },
     [],

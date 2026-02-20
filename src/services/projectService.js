@@ -1,7 +1,7 @@
 import api from '../api/axios'
 import { API_PATHS } from '../constants'
 
-const createIdempotencyKey = () => {
+export const createProjectIdempotencyKey = () => {
   if (globalThis.crypto?.randomUUID) {
     return globalThis.crypto.randomUUID()
   }
@@ -23,7 +23,10 @@ const createIdempotencyKey = () => {
   return `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex.slice(8, 10).join('')}-${hex.slice(10, 16).join('')}`
 }
 
-export const createProject = async (payload, idempotencyKey = createIdempotencyKey()) => {
+export const createProject = async (
+  payload,
+  idempotencyKey = createProjectIdempotencyKey(),
+) => {
   const response = await api.post(API_PATHS.projects, payload, {
     headers: {
       'Idempotency-Key': idempotencyKey,
@@ -45,7 +48,7 @@ export const getProjects = async () => {
 export const updateProject = async (
   projectId,
   payload,
-  idempotencyKey = createIdempotencyKey(),
+  idempotencyKey = createProjectIdempotencyKey(),
 ) => {
   const response = await api.put(API_PATHS.projectById(projectId), payload, {
     headers: {
