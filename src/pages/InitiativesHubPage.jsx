@@ -11,26 +11,18 @@ import {
 
 const STATUS_OPTIONS = [
   'IN_PROGRESS',
-  'COMPLETED',
-  'PLANNING',
-  'ON_HOLD',
-  'CANCELLED',
+  'CONCLUDED',
 ]
 
 const STATUS_LABELS = {
   IN_PROGRESS: 'Em andamento',
-  COMPLETED: 'Concluida',
-  PLANNING: 'Planejamento',
-  ON_HOLD: 'Em espera',
-  CANCELLED: 'Cancelada',
+  CONCLUDED: 'Concluida',
 }
 
 const STATUS_CLASS_NAMES = {
   IN_PROGRESS: 'in-progress',
+  CONCLUDED: 'completed',
   COMPLETED: 'completed',
-  PLANNING: 'planning',
-  ON_HOLD: 'on-hold',
-  CANCELLED: 'on-hold',
 }
 
 const EMPTY_FORM = {
@@ -57,7 +49,12 @@ const normalizeYear = value => {
   return parsed
 }
 
-const normalizeStatus = value => String(value || '').trim().toUpperCase()
+const normalizeStatus = value => {
+  const normalized = String(value || '').trim().toUpperCase()
+  if (normalized === 'COMPLETED' || normalized === 'CONCLUIDA') return 'CONCLUDED'
+  if (normalized === 'EM_ANDAMENTO') return 'IN_PROGRESS'
+  return normalized
+}
 
 const getStatusLabel = status => {
   const normalized = normalizeStatus(status)
@@ -104,6 +101,9 @@ const buildPayload = (formData, existingId = '') => {
   if (!dueDate) throw new Error('Data da iniciativa e obrigatoria.')
   if (!leaderId) throw new Error('Leader ID e obrigatorio.')
   if (!initiativeStatus) throw new Error('Status da iniciativa e obrigatorio.')
+  if (!STATUS_OPTIONS.includes(initiativeStatus)) {
+    throw new Error('Status da iniciativa deve ser Em andamento ou Concluida.')
+  }
 
   const payload = {
     initiativeName: name,
@@ -261,12 +261,16 @@ function InitiativesHubPage({
     setFormError('')
     setFormSuccess('')
     setEditingInitiativeId(initiative?.initiativeId || '')
+    const normalizedStatus = normalizeStatus(initiative?.initiativeStatus || 'IN_PROGRESS')
+
     setFormData({
       initiativeName: initiative?.initiativeName || '',
       initiativeDescription: initiative?.initiativeDescription || '',
       initiativeType: initiative?.initiativeType || '',
       initiativeDueDate: initiative?.initiativeDueDate || '',
-      initiativeStatus: normalizeStatus(initiative?.initiativeStatus || 'IN_PROGRESS'),
+      initiativeStatus: STATUS_OPTIONS.includes(normalizedStatus)
+        ? normalizedStatus
+        : 'IN_PROGRESS',
       leaderId: initiative?.leaderId || '',
       leaderName: initiative?.leaderName || '',
     })
@@ -659,4 +663,3 @@ function InitiativesHubPage({
 }
 
 export default InitiativesHubPage
-
