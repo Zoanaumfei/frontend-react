@@ -17,6 +17,9 @@ const toDateLabel = value => {
   return date.toLocaleDateString('en-US')
 }
 
+const getProjectId = project => project.projectId || project.id || '--'
+const getProjectName = project => project.projectName || project.name || '--'
+
 function ApqpVehiclesPage() {
   const [vehicles, setVehicles] = useState([])
   const [templates, setTemplates] = useState([])
@@ -73,7 +76,8 @@ function ApqpVehiclesPage() {
       if (!normalizedSearch) return true
 
       const haystack = [
-        vehicle.name,
+        getProjectId(vehicle),
+        getProjectName(vehicle),
         vehicle.customer,
         vehicle.platform,
         vehicle.status,
@@ -86,21 +90,21 @@ function ApqpVehiclesPage() {
   }, [searchValue, statusFilter, vehicles])
 
   return (
-    <ApqpLayout title="Vehicles">
-      <section className="apqp-page apqp-vehicles" aria-labelledby="apqp-vehicles-title">
+    <ApqpLayout title="Projects">
+      <section className="apqp-page apqp-vehicles" aria-labelledby="apqp-projects-title">
         <header className="apqp-page__header">
           <div>
             <p className="apqp-page__eyebrow">Portfolio</p>
-            <h2 id="apqp-vehicles-title" className="apqp-page__title">
-              Vehicles
+            <h2 id="apqp-projects-title" className="apqp-page__title">
+              Projects
             </h2>
             <p className="apqp-page__lead">
-              Manage vehicle programs and track APQP progress by part completion.
+              Manage project programs and track APQP progress by part completion.
             </p>
           </div>
-          <button type="button" className="apqp-btn apqp-btn--primary">
-            Create Vehicle
-          </button>
+          <Link to="/new-project-creation" className="apqp-btn apqp-btn--primary">
+            Create Project
+          </Link>
         </header>
 
         <div className="apqp-page__filters">
@@ -110,7 +114,7 @@ function ApqpVehiclesPage() {
               type="search"
               value={searchValue}
               onChange={event => setSearchValue(event.target.value)}
-              placeholder="Vehicle, customer, platform..."
+              placeholder="Project ID, project name, customer..."
             />
           </label>
           <label className="apqp-filter">
@@ -136,8 +140,8 @@ function ApqpVehiclesPage() {
 
         {!isLoading && filteredVehicles.length === 0 ? (
           <article className="apqp-empty-state">
-            <h3>No vehicles found</h3>
-            <p>Try adjusting filters or create the first vehicle program.</p>
+            <h3>No projects found</h3>
+            <p>Try adjusting filters or create the first project program.</p>
           </article>
         ) : null}
 
@@ -146,7 +150,8 @@ function ApqpVehiclesPage() {
             <table className="apqp-table">
               <thead>
                 <tr>
-                  <th>Vehicle Name</th>
+                  <th>Project ID</th>
+                  <th>Project Name</th>
                   <th>Customer</th>
                   <th>Platform</th>
                   <th>SOP Date</th>
@@ -163,7 +168,8 @@ function ApqpVehiclesPage() {
 
                   return (
                     <tr key={vehicle.id}>
-                      <td>{vehicle.name}</td>
+                      <td>{getProjectId(vehicle)}</td>
+                      <td>{getProjectName(vehicle)}</td>
                       <td>{vehicle.customer}</td>
                       <td>{vehicle.platform}</td>
                       <td>{toDateLabel(vehicle.sopDate)}</td>
@@ -200,4 +206,3 @@ function ApqpVehiclesPage() {
 }
 
 export default ApqpVehiclesPage
-

@@ -107,6 +107,8 @@ export const APQP_TEMPLATES = [
 export const APQP_VEHICLES = [
   {
     id: 'veh-atlas-2027',
+    projectId: 'PRJ-ATLAS-2027',
+    projectName: 'Atlas EV 2027',
     name: 'Atlas EV 2027',
     customer: 'Northwind Motors',
     platform: 'EV-C',
@@ -116,6 +118,8 @@ export const APQP_VEHICLES = [
   },
   {
     id: 'veh-aurora-2026',
+    projectId: 'PRJ-AURORA-2026',
+    projectName: 'Aurora Hybrid',
     name: 'Aurora Hybrid',
     customer: 'Fabrikam Auto',
     platform: 'HX-2',
@@ -125,6 +129,8 @@ export const APQP_VEHICLES = [
   },
   {
     id: 'veh-comet-2026',
+    projectId: 'PRJ-COMET-2026',
+    projectName: 'Comet SUV Refresh',
     name: 'Comet SUV Refresh',
     customer: 'Contoso Vehicles',
     platform: 'SUV-R',
@@ -445,4 +451,3 @@ export const APQP_NOTIFICATIONS = [
     link: '/apqp/vehicles/veh-comet-2026?tab=bom&part=part-comet-001',
   },
 ]
-

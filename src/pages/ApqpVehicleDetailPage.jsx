@@ -18,6 +18,26 @@ const dateLabel = value => {
 
 const tabs = ['bom', 'kanban', 'settings']
 
+const getPartDeliverablesProgress = (part, stages = []) => {
+  const stageDefinitions = stages.flatMap(stage => stage.deliverables || [])
+  const total = stageDefinitions.length
+  if (!total) return { percent: 0, done: 0, total: 0 }
+
+  const done = stageDefinitions.filter(definition => {
+    return stages.some(stage => {
+      const stageEntries = part?.deliverablesByStage?.[stage.id] || []
+      return stageEntries.some(
+        entry =>
+          (entry.id === definition.id || entry.name === definition.name) &&
+          entry.status === 'Done',
+      )
+    })
+  }).length
+
+  const percent = Math.round((done / total) * 100)
+  return { percent, done, total }
+}
+
 const getDeliverableCompletion = (part, stage) => {
   const required = (stage?.deliverables || []).filter(item => item.required)
   const entries = part?.deliverablesByStage?.[stage?.id] || []
@@ -266,15 +286,20 @@ function ApqpVehicleDetailPage() {
     )
   }
 
+  const projectName = vehicle.projectName || vehicle.name || vehicle.id
+  const projectCode = vehicle.projectId || vehicle.id
+  const selectedPartDeliverablesProgress = getPartDeliverablesProgress(selectedPart, template.stages)
+
   return (
-    <ApqpLayout title={vehicle.name}>
+    <ApqpLayout title={projectName}>
       <section className="apqp-page">
         <header className="apqp-page__header">
           <div>
-            <p className="apqp-page__eyebrow">Vehicle Project</p>
-            <h2 className="apqp-page__title">{vehicle.name}</h2>
+            <p className="apqp-page__eyebrow">Project</p>
+            <h2 className="apqp-page__title">{projectName}</h2>
             <p className="apqp-page__lead">
-              {vehicle.customer} | {vehicle.platform} | SOP {dateLabel(vehicle.sopDate)}
+              Project ID {projectCode} | {vehicle.customer} | {vehicle.platform} | SOP{' '}
+              {dateLabel(vehicle.sopDate)}
             </p>
           </div>
           <div className="apqp-page__header-actions">
@@ -321,6 +346,7 @@ function ApqpVehicleDetailPage() {
                         <th>Family</th>
                         <th>Revision</th>
                         <th>Current Stage</th>
+                        <th>Progress</th>
                         <th>Owner</th>
                         <th>Due Date</th>
                         <th />
@@ -329,6 +355,7 @@ function ApqpVehicleDetailPage() {
                     <tbody>
                       {pagedParts.map(part => {
                         const stage = template.stages.find(item => item.id === part.currentStageId)
+                        const deliverablesProgress = getPartDeliverablesProgress(part, template.stages)
                         return (
                           <tr key={part.id} className="apqp-table__row--clickable" onClick={() => updateQuery({ part: part.id })}>
                             <td>{part.partNumber}</td>
@@ -337,6 +364,14 @@ function ApqpVehicleDetailPage() {
                             <td>{part.family}</td>
                             <td>{part.revision}</td>
                             <td><span className="apqp-stage-badge" style={{ '--stage-color': stage?.color || '#4d5b66' }}>{stage?.name || '--'}</span></td>
+                            <td>
+                              <div className="apqp-progress">
+                                <div className="apqp-progress__bar" style={{ width: `${deliverablesProgress.percent}%` }} />
+                                <span className="apqp-progress__meta">
+                                  {deliverablesProgress.percent}% ({deliverablesProgress.done}/{deliverablesProgress.total} deliverables)
+                                </span>
+                              </div>
+                            </td>
                             <td>{part.owner?.name}</td>
                             <td>{dateLabel(part.dueDate)}</td>
                             <td><button type="button" className="apqp-btn apqp-btn--ghost" onClick={event => { event.stopPropagation(); updateQuery({ part: part.id }) }}>Open</button></td>
@@ -465,6 +500,12 @@ function ApqpVehicleDetailPage() {
 
           <div className="apqp-part-drawer__meta">
             <span className="apqp-stage-badge" style={{ '--stage-color': selectedStage?.color || '#4d5b66' }}>{selectedStage?.name || '--'}</span>
+            <div className="apqp-progress">
+              <div className="apqp-progress__bar" style={{ width: `${selectedPartDeliverablesProgress.percent}%` }} />
+              <span className="apqp-progress__meta">
+                {selectedPartDeliverablesProgress.percent}% ({selectedPartDeliverablesProgress.done}/{selectedPartDeliverablesProgress.total} deliverables)
+              </span>
+            </div>
             <p>Owner: {selectedPart.owner?.name || '--'}</p>
             <p>Due Date: {dateLabel(selectedPart.dueDate)}</p>
           </div>
