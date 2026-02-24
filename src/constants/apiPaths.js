@@ -25,4 +25,22 @@ export const API_PATHS = {
     presignUpload: `${API_V1_PREFIX}/files/presign-upload`,
     presignDownload: `${API_V1_PREFIX}/files/presign-download`,
   },
+  apqp: {
+    vehicles: `${API_V1_PREFIX}/apqp/vehicles`,
+    vehicleById: vehicleId =>
+      `${API_V1_PREFIX}/apqp/vehicles/${encodeURIComponent(vehicleId)}`,
+    vehicleParts: vehicleId =>
+      `${API_V1_PREFIX}/apqp/vehicles/${encodeURIComponent(vehicleId)}/parts`,
+    partById: partId => `${API_V1_PREFIX}/apqp/parts/${encodeURIComponent(partId)}`,
+    movePartStage: partId =>
+      `${API_V1_PREFIX}/apqp/parts/${encodeURIComponent(partId)}/stage`,
+    templates: `${API_V1_PREFIX}/apqp/templates`,
+    templateById: templateId =>
+      `${API_V1_PREFIX}/apqp/templates/${encodeURIComponent(templateId)}`,
+    templateStages: templateId =>
+      `${API_V1_PREFIX}/apqp/templates/${encodeURIComponent(templateId)}/stages`,
+    stageDeliverables: stageId =>
+      `${API_V1_PREFIX}/apqp/stages/${encodeURIComponent(stageId)}/deliverables`,
+    notifications: `${API_V1_PREFIX}/apqp/notifications`,
+  },
 }

@@ -1,6 +1,9 @@
-﻿import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import { GROUPS } from './auth/auth.constants.js'
 import AuthGuard from './components/AuthGuard'
 import Navigation from './components/Navigation'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import FirstAccessPage from './pages/FirstAccessPage'
 import HomePage from './pages/HomePage'
 import InternalDashboardPage from './pages/InternalDashboardPage'
 import InternalHomePage from './pages/InternalHomePage'
@@ -20,17 +23,23 @@ import UsersPage from './pages/UsersPage'
 import OurMissionPage from './pages/OurMissionPage'
 import SupportPage from './pages/SupportPage'
 import NoAccessPage from './pages/NoAccessPage'
-import { GROUPS } from './auth/auth.constants.js'
 import RequestDetailPage from './pages/RequestDetailPage'
-import FirstAccessPage from './pages/FirstAccessPage'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ApqpVehiclesPage from './pages/ApqpVehiclesPage'
+import ApqpVehicleDetailPage from './pages/ApqpVehicleDetailPage'
+import ApqpTemplatesPage from './pages/ApqpTemplatesPage'
+import ApqpTemplateDetailPage from './pages/ApqpTemplateDetailPage'
+import ApqpNotificationsPage from './pages/ApqpNotificationsPage'
+import ApqpSettingsPage from './pages/ApqpSettingsPage'
 import './styles/app.css'
 
 function App() {
+  const location = useLocation()
+  const isApqpRoute = location.pathname.startsWith('/apqp')
+
   return (
     <div className="app">
       <Navigation />
-      <main className="app__content">
+      <main className={`app__content${isApqpRoute ? ' app__content--wide' : ''}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/first-access" element={<FirstAccessPage />} />
@@ -166,6 +175,54 @@ function App() {
               </AuthGuard>
             }
           />
+          <Route
+            path="/apqp/vehicles"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ApqpVehiclesPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/apqp/vehicles/:vehicleId"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ApqpVehicleDetailPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/apqp/templates"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.ADMIN]}>
+                <ApqpTemplatesPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/apqp/templates/:templateId"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.ADMIN]}>
+                <ApqpTemplateDetailPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/apqp/notifications"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ApqpNotificationsPage />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/apqp/settings"
+            element={
+              <AuthGuard allowedGroups={[GROUPS.INTERNAL, GROUPS.ADMIN]}>
+                <ApqpSettingsPage />
+              </AuthGuard>
+            }
+          />
         </Routes>
       </main>
     </div>
@@ -173,8 +230,4 @@ function App() {
 }
 
 export default App
-
-
-
-
 

@@ -1,0 +1,448 @@
+export const APQP_STATUS = {
+  ACTIVE: 'Active',
+  ON_HOLD: 'On Hold',
+  AT_RISK: 'At Risk',
+  COMPLETED: 'Completed',
+  ARCHIVED: 'Archived',
+}
+
+export const APQP_TEMPLATES = [
+  {
+    id: 'tpl-global-apqp',
+    name: 'Global APQP Standard',
+    description: 'Global template for standard vehicle programs.',
+    stages: [
+      {
+        id: 'plan',
+        name: 'Plan & Define',
+        color: '#0f766e',
+        wipLimit: 12,
+        deliverables: [
+          { id: 'del-charter', name: 'Project Charter', type: 'File', required: true },
+          { id: 'del-risks', name: 'Initial Risk Register', type: 'Text', required: true },
+          { id: 'del-targets', name: 'Quality Targets', type: 'Number', required: false },
+        ],
+      },
+      {
+        id: 'design',
+        name: 'Design & Development',
+        color: '#2563eb',
+        wipLimit: 10,
+        deliverables: [
+          { id: 'del-dfmea', name: 'DFMEA', type: 'File', required: true },
+          { id: 'del-cad-freeze', name: 'CAD Freeze Date', type: 'Date', required: true },
+          { id: 'del-feasibility', name: 'Supplier Feasibility', type: 'Checkbox', required: true },
+        ],
+      },
+      {
+        id: 'process',
+        name: 'Process Development',
+        color: '#f59e0b',
+        wipLimit: 9,
+        deliverables: [
+          { id: 'del-pfmea', name: 'PFMEA', type: 'File', required: true },
+          { id: 'del-flow', name: 'Process Flow', type: 'File', required: true },
+          { id: 'del-control-plan', name: 'Control Plan', type: 'File', required: true },
+        ],
+      },
+      {
+        id: 'validation',
+        name: 'Validation',
+        color: '#7c3aed',
+        wipLimit: 8,
+        deliverables: [
+          { id: 'del-ppap', name: 'PPAP Package', type: 'File', required: true },
+          { id: 'del-capability', name: 'Capability Study', type: 'Number', required: true },
+          { id: 'del-trials', name: 'Run@Rate', type: 'Select', required: false },
+        ],
+      },
+      {
+        id: 'launch',
+        name: 'Launch',
+        color: '#16a34a',
+        wipLimit: 999,
+        deliverables: [
+          { id: 'del-safe-launch', name: 'Safe Launch Checklist', type: 'Checkbox', required: true },
+          { id: 'del-closure', name: 'Open Issues Closure', type: 'Text', required: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'tpl-light-apqp',
+    name: 'Light APQP',
+    description: 'Shorter APQP flow for low-complexity carry-over programs.',
+    stages: [
+      {
+        id: 'scope',
+        name: 'Scope',
+        color: '#0f766e',
+        wipLimit: 20,
+        deliverables: [
+          { id: 'del-scope', name: 'Scope Confirmation', type: 'Checkbox', required: true },
+        ],
+      },
+      {
+        id: 'industrialization',
+        name: 'Industrialization',
+        color: '#2563eb',
+        wipLimit: 14,
+        deliverables: [
+          { id: 'del-pfmea-lite', name: 'PFMEA Lite', type: 'File', required: true },
+        ],
+      },
+      {
+        id: 'release',
+        name: 'Release',
+        color: '#16a34a',
+        wipLimit: 999,
+        deliverables: [
+          { id: 'del-release-pack', name: 'Release Pack', type: 'File', required: true },
+        ],
+      },
+    ],
+  },
+]
+
+export const APQP_VEHICLES = [
+  {
+    id: 'veh-atlas-2027',
+    name: 'Atlas EV 2027',
+    customer: 'Northwind Motors',
+    platform: 'EV-C',
+    sopDate: '2027-03-15',
+    status: APQP_STATUS.ACTIVE,
+    templateId: 'tpl-global-apqp',
+  },
+  {
+    id: 'veh-aurora-2026',
+    name: 'Aurora Hybrid',
+    customer: 'Fabrikam Auto',
+    platform: 'HX-2',
+    sopDate: '2026-11-01',
+    status: APQP_STATUS.AT_RISK,
+    templateId: 'tpl-global-apqp',
+  },
+  {
+    id: 'veh-comet-2026',
+    name: 'Comet SUV Refresh',
+    customer: 'Contoso Vehicles',
+    platform: 'SUV-R',
+    sopDate: '2026-09-20',
+    status: APQP_STATUS.ON_HOLD,
+    templateId: 'tpl-light-apqp',
+  },
+]
+
+export const APQP_PARTS_BY_VEHICLE = {
+  'veh-atlas-2027': [
+    {
+      id: 'part-atlas-001',
+      partNumber: 'AT-BMB-001',
+      description: 'Front bumper beam',
+      supplier: 'Magna',
+      family: 'Body',
+      revision: 'C',
+      currentStageId: 'process',
+      owner: { id: 'usr-ana', name: 'Ana Silva', initials: 'AS' },
+      dueDate: '2026-03-22',
+      deliverablesByStage: {
+        process: [
+          {
+            id: 'atlas-001-pfmea',
+            name: 'PFMEA',
+            type: 'File',
+            required: true,
+            status: 'Done',
+            value: 'pfmea-v4.pdf',
+          },
+          {
+            id: 'atlas-001-flow',
+            name: 'Process Flow',
+            type: 'File',
+            required: true,
+            status: 'Done',
+            value: 'flow-v2.pdf',
+          },
+          {
+            id: 'atlas-001-control',
+            name: 'Control Plan',
+            type: 'File',
+            required: true,
+            status: 'In Progress',
+            value: '',
+          },
+        ],
+      },
+      history: [
+        {
+          id: 'hist-atlas-001-1',
+          fromStageId: 'plan',
+          toStageId: 'design',
+          user: 'Ana Silva',
+          date: '2026-01-30T10:20:00Z',
+          note: 'Core feasibility approved.',
+        },
+        {
+          id: 'hist-atlas-001-2',
+          fromStageId: 'design',
+          toStageId: 'process',
+          user: 'Rafael Lima',
+          date: '2026-02-14T14:12:00Z',
+          note: 'Design frozen and sourcing complete.',
+        },
+      ],
+    },
+    {
+      id: 'part-atlas-002',
+      partNumber: 'AT-PNL-113',
+      description: 'Inner door panel LH',
+      supplier: 'Lear',
+      family: 'Trim',
+      revision: 'A',
+      currentStageId: 'validation',
+      owner: { id: 'usr-joao', name: 'Joao Costa', initials: 'JC' },
+      dueDate: '2026-02-12',
+      deliverablesByStage: {
+        validation: [
+          {
+            id: 'atlas-002-ppap',
+            name: 'PPAP Package',
+            type: 'File',
+            required: true,
+            status: 'In Progress',
+            value: '',
+          },
+          {
+            id: 'atlas-002-cap',
+            name: 'Capability Study',
+            type: 'Number',
+            required: true,
+            status: 'Not Started',
+            value: '',
+          },
+          {
+            id: 'atlas-002-rate',
+            name: 'Run@Rate',
+            type: 'Select',
+            required: false,
+            status: 'Done',
+            value: 'Planned',
+          },
+        ],
+      },
+      history: [
+        {
+          id: 'hist-atlas-002-1',
+          fromStageId: 'plan',
+          toStageId: 'design',
+          user: 'Joao Costa',
+          date: '2026-01-18T09:05:00Z',
+        },
+        {
+          id: 'hist-atlas-002-2',
+          fromStageId: 'design',
+          toStageId: 'process',
+          user: 'Joao Costa',
+          date: '2026-02-01T11:11:00Z',
+        },
+        {
+          id: 'hist-atlas-002-3',
+          fromStageId: 'process',
+          toStageId: 'validation',
+          user: 'Ana Silva',
+          date: '2026-02-20T15:40:00Z',
+          note: 'Process review accepted.',
+        },
+      ],
+    },
+    {
+      id: 'part-atlas-003',
+      partNumber: 'AT-WHR-888',
+      description: 'Rear wheel house',
+      supplier: 'Gestamp',
+      family: 'Body',
+      revision: 'B',
+      currentStageId: 'launch',
+      owner: { id: 'usr-maria', name: 'Maria Rocha', initials: 'MR' },
+      dueDate: '2026-04-30',
+      deliverablesByStage: {
+        launch: [
+          {
+            id: 'atlas-003-safe',
+            name: 'Safe Launch Checklist',
+            type: 'Checkbox',
+            required: true,
+            status: 'Done',
+            value: true,
+          },
+          {
+            id: 'atlas-003-issues',
+            name: 'Open Issues Closure',
+            type: 'Text',
+            required: true,
+            status: 'Done',
+            value: 'All open points closed.',
+          },
+        ],
+      },
+      history: [
+        {
+          id: 'hist-atlas-003-1',
+          fromStageId: 'validation',
+          toStageId: 'launch',
+          user: 'Maria Rocha',
+          date: '2026-02-03T08:33:00Z',
+        },
+      ],
+    },
+    {
+      id: 'part-atlas-004',
+      partNumber: 'AT-MTR-095',
+      description: 'Power steering motor bracket',
+      supplier: 'Bosch',
+      family: 'Powertrain',
+      revision: 'A',
+      currentStageId: 'design',
+      owner: { id: 'usr-lucas', name: 'Lucas Prado', initials: 'LP' },
+      dueDate: '2026-05-07',
+      deliverablesByStage: {
+        design: [
+          {
+            id: 'atlas-004-dfmea',
+            name: 'DFMEA',
+            type: 'File',
+            required: true,
+            status: 'In Progress',
+            value: '',
+          },
+          {
+            id: 'atlas-004-cad',
+            name: 'CAD Freeze Date',
+            type: 'Date',
+            required: true,
+            status: 'Not Started',
+            value: '',
+          },
+        ],
+      },
+      history: [],
+    },
+  ],
+  'veh-aurora-2026': [
+    {
+      id: 'part-aurora-001',
+      partNumber: 'AU-ACM-500',
+      description: 'A/C compressor mount',
+      supplier: 'Denso',
+      family: 'HVAC',
+      revision: 'D',
+      currentStageId: 'validation',
+      owner: { id: 'usr-iris', name: 'Iris Nogueira', initials: 'IN' },
+      dueDate: '2026-02-10',
+      deliverablesByStage: {
+        validation: [
+          {
+            id: 'aurora-001-ppap',
+            name: 'PPAP Package',
+            type: 'File',
+            required: true,
+            status: 'Not Started',
+            value: '',
+          },
+        ],
+      },
+      history: [],
+    },
+    {
+      id: 'part-aurora-002',
+      partNumber: 'AU-CNS-020',
+      description: 'Center console trim',
+      supplier: 'Faurecia',
+      family: 'Trim',
+      revision: 'B',
+      currentStageId: 'process',
+      owner: { id: 'usr-caio', name: 'Caio Moura', initials: 'CM' },
+      dueDate: '2026-03-18',
+      deliverablesByStage: {
+        process: [
+          {
+            id: 'aurora-002-flow',
+            name: 'Process Flow',
+            type: 'File',
+            required: true,
+            status: 'Done',
+            value: 'flow-v5.pdf',
+          },
+        ],
+      },
+      history: [],
+    },
+  ],
+  'veh-comet-2026': [
+    {
+      id: 'part-comet-001',
+      partNumber: 'CM-LMP-001',
+      description: 'Rear lamp housing',
+      supplier: 'Valeo',
+      family: 'Lighting',
+      revision: 'A',
+      currentStageId: 'industrialization',
+      owner: { id: 'usr-ana', name: 'Ana Silva', initials: 'AS' },
+      dueDate: '2026-06-09',
+      deliverablesByStage: {
+        industrialization: [
+          {
+            id: 'comet-001-pfmea',
+            name: 'PFMEA Lite',
+            type: 'File',
+            required: true,
+            status: 'In Progress',
+            value: '',
+          },
+        ],
+      },
+      history: [],
+    },
+  ],
+}
+
+export const APQP_NOTIFICATIONS = [
+  {
+    id: 'ntf-001',
+    type: 'Part moved stage',
+    title: 'AT-PNL-113 moved to Validation',
+    date: '2026-02-20T15:40:00Z',
+    unread: true,
+    assignedTo: 'Joao Costa',
+    link: '/apqp/vehicles/veh-atlas-2027?tab=kanban&part=part-atlas-002',
+  },
+  {
+    id: 'ntf-002',
+    type: 'Deliverable pending',
+    title: 'PFMEA is still missing for AU-ACM-500',
+    date: '2026-02-23T09:00:00Z',
+    unread: true,
+    assignedTo: 'Iris Nogueira',
+    link: '/apqp/vehicles/veh-aurora-2026?tab=bom&part=part-aurora-001',
+  },
+  {
+    id: 'ntf-003',
+    type: 'Overdue part',
+    title: 'AT-PNL-113 is overdue',
+    date: '2026-02-24T07:20:00Z',
+    unread: false,
+    assignedTo: 'Joao Costa',
+    link: '/apqp/vehicles/veh-atlas-2027?tab=bom&part=part-atlas-002',
+  },
+  {
+    id: 'ntf-004',
+    type: 'Assignment changes',
+    title: 'Owner changed for CM-LMP-001',
+    date: '2026-02-22T11:02:00Z',
+    unread: false,
+    assignedTo: 'Ana Silva',
+    link: '/apqp/vehicles/veh-comet-2026?tab=bom&part=part-comet-001',
+  },
+]
+

@@ -24,6 +24,9 @@ function InternalHomePage() {
         <Link className="request-card__action internal-home__action" to="/project-management">
           ProjectManagement
         </Link>
+        <Link className="request-card__action internal-home__action" to="/apqp/vehicles">
+          APQP
+        </Link>
       </div>
       <div className="dashboard__mode">
         <p className="dashboard__mode-label">Modo de exibicao</p>
